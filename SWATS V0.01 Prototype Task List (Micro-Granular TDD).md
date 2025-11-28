@@ -7,13 +7,13 @@
 ## **1. Project Initialization & Infrastructure**
 
 * **Environment Setup**
-  * [ ] Initialize Git repository & `.gitignore`.
-  * [ ] Configure `pyproject.toml` (Poetry) with dependencies: `flask`, `sqlalchemy`, `psycopg2-binary`, `bcrypt`, `pyjwt`, `pandas` (for CSV).
-  * [ ] Install dev tools: `pytest`, `pytest-cov`, `black`, `flake8`.
+  * [x] Initialize Git repository & `.gitignore`.
+  * [x] Configure `requirements.txt` (substituted for `pyproject.toml`) with dependencies: `flask`, `sqlalchemy`, `psycopg2-binary`, `bcrypt`, `pyjwt`, `pandas`.
+  * [x] Install dev tools: `pytest`, `pytest-cov`, `black`, `flake8`.
 * **Scaffolding**
-  * [ ] Create folder structure: `src/{api, core, models, services, utils}` and `tests/{unit, integration}`.
+  * [x] Create folder structure: `src/{api, core, models, services, utils}` and `tests/{unit, integration}`.
   * [ ] **(Green)** Implement `src/core/config.py` (Database URL, Secret Keys).
-  * [ ] **(Green)** Implement `src/core/database.py` (SQLAlchemy `db` instance).
+  * [x] **(Green)** Implement `src/core/database.py` (SQLAlchemy `db` instance).
   * [ ] **(Green)** Create `tests/conftest.py` with `db_session` fixture (SQLite memory).
 
 ## **2. Database Layer (The Schema)**

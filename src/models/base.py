@@ -1,14 +1,24 @@
+from datetime import datetime, timezone
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, DateTime
-from datetime import datetime
+from sqlalchemy import Column, DateTime, Boolean
 
 Base = declarative_base()
 
 class BaseModel(Base):
     __abstract__ = True
-    
-    # Using integer ID for simplicity as per common practice, 
-    # though UUIDs are also an option. Sticking to simple int for now.
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class TimestampMixin:
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
+
+class SoftDeleteMixin:
+    is_active = Column(Boolean, default=True, nullable=False)
+    deleted_at = Column(DateTime, nullable=True)
+
+    def soft_delete(self):
+        self.is_active = False
+        self.deleted_at = datetime.now(timezone.utc)
+
+    def restore(self):
+        self.is_active = True
+        self.deleted_at = None
