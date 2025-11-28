@@ -1,0 +1,10 @@
+flask
+sqlalchemy
+psycopg2-binary
+bcrypt
+pyjwt
+pandas
+pytest
+pytest-cov
+black
+flake8
