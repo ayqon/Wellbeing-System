@@ -38,8 +38,8 @@
 #### **Dev 3: Student Entity**
 
 * **Scope:** `src/models/student.py`
-  * [ ] **(Red)** Create `tests/unit/test_student_model.py`.
-  * [ ] **(Green)** Implement `Student` class (Inherits `BaseModel`).
+  * [x] **(Red)** Create `tests/unit/test_student_model.py`.
+  * [x] **(Green)** Implement `Student` class (Inherits `BaseModel`).
     * **OOP:** Add method `increment_misses()` to encapsulate counter logic.
 
 #### **Dev 4: Academic Hierarchy**
