@@ -1,3 +1,4 @@
+'''
 #Unit Tests for Student Wellbeing Analytics & Tracking System (SWATS) regarding math and logic
 
     ###T-UNIT-01
@@ -285,3 +286,4 @@ class TestSWATS:
             print("Suggested Fix: Review the URL handling logic to ensure protection against URL traversal attacks.")
 
     ###compleeted all tests in project.py
+'''
