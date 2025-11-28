@@ -68,7 +68,4 @@ class WellbeingSurvey:
                 print("Suggested Fix: Review the risk calculation logic for silent struggle scenarios.")
 
 
-# Run tests
-WellbeingSurvey.test_high_stress_risk_calculation.is_critical()
-WellbeingSurvey.test_disengagement_risk_calculation.is_critical()
-WellbeingSurvey.test_silent_struggle_risk_calculation.is_critical()
+
