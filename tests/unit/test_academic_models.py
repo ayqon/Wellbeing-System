@@ -1,5 +1,5 @@
 import pytest
-from src.models.academic import Course, Module, StudentModule
+from src.models.academic import Course, Module, StudentModule, ModuleGrade, AttendanceRegister
 from src.models.student import Student
 
 
@@ -142,3 +142,19 @@ class TestStudentModule:
         assert len(module.student_enrollments) == 2
         assert enrollment1 in module.student_enrollments
         assert enrollment2 in module.student_enrollments
+
+def test_module_grade_creation():
+    grade = ModuleGrade(student_id=1, module_id=1, grade=85, is_final=True)
+    assert grade.student_id == 1
+    assert grade.module_id == 1
+    assert grade.grade == 85
+    assert grade.is_final is True
+
+def test_attendance_register_creation():
+    from datetime import datetime
+    date = datetime(2025, 10, 1)
+    attendance = AttendanceRegister(student_id=1, module_id=1, date=date, status="Present")
+    assert attendance.student_id == 1
+    assert attendance.module_id == 1
+    assert attendance.date == date
+    assert attendance.status == "Present"

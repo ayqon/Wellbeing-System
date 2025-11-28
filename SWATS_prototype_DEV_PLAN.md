@@ -31,8 +31,8 @@
 #### **Dev 2: User Entity**
 
 * **Scope:** `src/models/user.py`
-  * [ ] **(Red)** Create `tests/unit/test_user_model.py`. Test `check_password` method.
-  * [ ] **(Green)** Implement `User` class (Inherits `BaseModel`, `SoftDeleteMixin`).
+  * [x] **(Red)** Create `tests/unit/test_user_model.py`. Test `check_password` method.
+  * [x] **(Green)** Implement `User` class (Inherits `BaseModel`, `SoftDeleteMixin`).
     * **OOP:** Encapsulate password hashing inside `set_password()` and `check_password()` methods.
 
 #### **Dev 3: Student Entity**
@@ -60,15 +60,15 @@
 #### **Dev 6: Privacy Object**
 
 * **Scope:** `src/utils/privacy.py`
-  * [ ] **(Red)** Create `tests/unit/test_anonymizer.py`.
-  * [ ] **(Green)** Implement `Anonymizer` class.
+  * [x] **(Red)** Create `tests/unit/test_anonymizer.py`.
+  * [x] **(Green)** Implement `Anonymizer` class.
     * **OOP:** Method `mask_identity(user_id: str) -> str`. Make the salt a private attribute `_salt`.
 
 **🌙 Nightly Refactor (Dev 1):**
 
-> * Ensure all Models inherit correctly from `BaseModel`.
-> * Resolve circular dependencies in `src/models/__init__.py`.
-> * Generate Alembic Migrations.
+> * [x] Ensure all Models inherit correctly from `BaseModel`.
+> * [x] Resolve circular dependencies in `src/models/__init__.py`.
+> * [ ] Generate Alembic Migrations.
 
 ---
 
@@ -109,8 +109,8 @@
 #### **Dev 5: Risk Engine (Encapsulation)**
 
 * **Scope:** `src/services/risk_engine.py`
-  * [x] **(Red)** Create `tests/unit/test_risk_engine.py`.
-  * [x] **(Green)** Implement `RiskCalculator` class.
+  * [ ] **(Red)** Create `tests/unit/test_risk_engine.py`.
+  * [ ] **(Green)** Implement `RiskCalculator` class.
     * **OOP:** Make weights constants/class attributes.
     * **Method:** `compute(metrics: StudentMetricsDTO) -> float`.
 

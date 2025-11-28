@@ -1,10 +1,9 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
-from datetime import datetime, timezone
-from src.models.base import BaseModel
+from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime
+from sqlalchemy.orm import relationship, backref
+from src.models.base import BaseModel, TimestampMixin
 
 
-class Course(BaseModel):
+class Course(BaseModel, TimestampMixin):
     """
     Course model representing an academic course.
     
@@ -14,19 +13,6 @@ class Course(BaseModel):
 
     # Primary key - manually added since BaseModel is empty
     id = Column(Integer, primary_key=True, autoincrement=True)
-    
-    # Timestamps - track when record is created and updated
-    created_at = Column(
-        DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        nullable=False
-    )
-    updated_at = Column(
-        DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        onupdate=lambda: datetime.now(timezone.utc), 
-        nullable=False
-    )
     
     # Business fields
     course_code = Column(String(20), unique=True, nullable=False)  # e.g., "AAI"
@@ -58,7 +44,7 @@ class Course(BaseModel):
         return f"<Course {self.course_code}: {self.name}>"
 
 
-class Module(BaseModel):
+class Module(BaseModel, TimestampMixin):
     """
     Module model representing a module within a course.
     
@@ -69,19 +55,6 @@ class Module(BaseModel):
 
     # Primary key - manually added since BaseModel is empty
     id = Column(Integer, primary_key=True, autoincrement=True)
-    
-    # Timestamps - track when record is created and updated
-    created_at = Column(
-        DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        nullable=False
-    )
-    updated_at = Column(
-        DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        onupdate=lambda: datetime.now(timezone.utc), 
-        nullable=False
-    )
     
     # Business fields
     module_code = Column(String(20), unique=True, nullable=False)  # e.g., "WM9QF"
@@ -119,7 +92,7 @@ class Module(BaseModel):
         return f"<Module {self.module_code}: {self.name}>"
 
 
-class StudentModule(BaseModel):
+class StudentModule(BaseModel, TimestampMixin):
     """
     Association object representing enrollment of a student in a module.
     
@@ -131,19 +104,6 @@ class StudentModule(BaseModel):
 
     # Primary key - manually added since BaseModel is empty
     id = Column(Integer, primary_key=True, autoincrement=True)
-    
-    # Timestamps - track when enrollment was created and updated
-    created_at = Column(
-        DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        nullable=False
-    )
-    updated_at = Column(
-        DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        onupdate=lambda: datetime.now(timezone.utc), 
-        nullable=False
-    )
     
     # Foreign keys - links to Student and Module
     student_id = Column(Integer, ForeignKey('students.id'), nullable=False)
@@ -177,3 +137,57 @@ class StudentModule(BaseModel):
         student_id = getattr(self.student, 'id', None)
         module_id = getattr(self.module, 'id', None)
         return f"<StudentModule student={student_id} module={module_id}>"
+
+
+class ModuleGrade(BaseModel, TimestampMixin):
+    """
+    Model representing a grade for a student in a module.
+    
+    OOP Principle: Encapsulation
+    """
+    __tablename__ = 'module_grades'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    student_id = Column(Integer, ForeignKey('students.id'), nullable=False)
+    module_id = Column(Integer, ForeignKey('modules.id'), nullable=False)
+    grade = Column(Integer, nullable=False) # 0-100
+    is_final = Column(Boolean, default=False)
+
+    student = relationship("Student", backref=backref("grades", cascade="all, delete-orphan"))
+    module = relationship("Module", backref=backref("grades", cascade="all, delete-orphan"))
+
+    def __init__(self, student_id, module_id, grade, is_final=False):
+        self.student_id = student_id
+        self.module_id = module_id
+        self.grade = grade
+        self.is_final = is_final
+
+    def __repr__(self):
+        return f"<ModuleGrade student={self.student_id} module={self.module_id} grade={self.grade}>"
+
+
+class AttendanceRegister(BaseModel, TimestampMixin):
+    """
+    Model representing an attendance record for a student in a module.
+    
+    OOP Principle: Encapsulation
+    """
+    __tablename__ = 'attendance_registers'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    student_id = Column(Integer, ForeignKey('students.id'), nullable=False)
+    module_id = Column(Integer, ForeignKey('modules.id'), nullable=False)
+    date = Column(DateTime, nullable=False)
+    status = Column(String(20), nullable=False) # e.g., "Present", "Absent", "Excused"
+
+    student = relationship("Student", backref=backref("attendance", cascade="all, delete-orphan"))
+    module = relationship("Module", backref=backref("attendance", cascade="all, delete-orphan"))
+
+    def __init__(self, student_id, module_id, date, status):
+        self.student_id = student_id
+        self.module_id = module_id
+        self.date = date
+        self.status = status
+
+    def __repr__(self):
+        return f"<AttendanceRegister student={self.student_id} module={self.module_id} date={self.date} status={self.status}>"

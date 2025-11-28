@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Boolean
 from sqlalchemy.orm import relationship, backref
-from src.models.base import Base
+from src.models.base import BaseModel, TimestampMixin
 import enum
 
 class SurveyStatus(enum.Enum):
@@ -8,7 +8,7 @@ class SurveyStatus(enum.Enum):
     COMPLETED = "COMPLETED"
     SKIPPED = "SKIPPED"
 
-class WellbeingSurvey(Base):
+class WellbeingSurvey(BaseModel, TimestampMixin):
     __tablename__ = 'wellbeing_surveys'
 
     survey_id = Column(Integer, primary_key=True, autoincrement=True)
