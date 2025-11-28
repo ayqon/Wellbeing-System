@@ -21,9 +21,9 @@
 #### **Dev 1 : Infrastructure & Abstractions**
 
 * **Scope:** `src/core/`, `src/models/base.py`
-  * [ ] **(Task)** Initialize Repo. Push structure.
-  * [ ] **(Green)** Create `src/core/database.py`: Define `Database` singleton class.
-  * [ ] **(Green)** Create `src/models/base.py`:
+  * [x] **(Task)** Initialize Repo. Push structure.
+  * [x] **(Green)** Create `src/core/database.py`: Define `Database` singleton class.
+  * [x] **(Green)** Create `src/models/base.py`:
     * Define `BaseModel` (SQLAlchemy Declarative Base).
     * Define `SoftDeleteMixin` class (Encapsulates `is_active` logic).
     * Define `TimestampMixin` class.
