@@ -71,6 +71,10 @@ class Student(BaseModel):
         OOP Principle: Encapsulation - Logic is contained within the object
         """
         self.missed_classes += 1
+    
+    def reset_misses(self):
+        """Resets the missed_classes counter"""
+        self.missed_classes = 0
 
     def __repr__(self):
         """String representation for debugging purposes"""
