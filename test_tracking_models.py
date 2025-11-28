@@ -95,7 +95,7 @@ class WellbeingSurvey:
             return (present_count / len(records)) * 100
 
 
-# Run tests #
+# Run tests
 WellbeingSurvey.test_high_stress_risk_calculation.is_critical()
 WellbeingSurvey.test_disengagement_risk_calculation.is_critical()
 WellbeingSurvey.test_silent_struggle_risk_calculation.is_critical()

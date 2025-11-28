@@ -52,10 +52,10 @@
 #### **Dev 5: Tracking Entities**
 
 * **Scope:** `src/models/tracking.py`
-  * [ ] **(Red)** Create `tests/unit/test_tracking_models.py`.
-  * [ ] **(Green)** Implement `WellbeingSurvey` class.
+  * [x] **(Red)** Create `tests/unit/test_tracking_models.py`.
+  * [x] **(Green)** Implement `WellbeingSurvey` class.
     * **OOP:** Add property `is_critical` (returns Bool) based on stress level.
-  * [ ] **(Green)** Implement `ModuleGrade` and `AttendanceRegister` classes.
+  * [x] **(Green)** Implement `ModuleGrade` and `AttendanceRegister` classes.
 
 #### **Dev 6: Privacy Object**
 
@@ -109,8 +109,8 @@
 #### **Dev 5: Risk Engine (Encapsulation)**
 
 * **Scope:** `src/services/risk_engine.py`
-  * [ ] **(Red)** Create `tests/unit/test_risk_engine.py`.
-  * [ ] **(Green)** Implement `RiskCalculator` class.
+  * [x] **(Red)** Create `tests/unit/test_risk_engine.py`.
+  * [x] **(Green)** Implement `RiskCalculator` class.
     * **OOP:** Make weights constants/class attributes.
     * **Method:** `compute(metrics: StudentMetricsDTO) -> float`.
 
