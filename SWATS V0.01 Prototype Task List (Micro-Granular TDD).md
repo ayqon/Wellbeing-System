@@ -35,8 +35,8 @@
 ## **3. Authentication & Core Logic**
 
 * **Auth Service**
-  * [ ] **(Red)** Create `tests/unit/test_auth.py`: Test login with valid/invalid credentials.
-  * [ ] **(Green)** Implement `src/services/auth_service.py`: `authenticate_user` returning JWT.
+  * [x] **(Red)** Create `tests/unit/test_auth_service.py`: Test login with valid/invalid credentials.
+  * [x] **(Green)** Implement `src/services/auth_service.py`: `authenticate_user` returning JWT.
   * [ ] **(Green)** Implement `src/api/auth.py`: `POST /login` endpoint.
 * **Utility: Password Reversal**
   * [ ] **(Red)** Create `tests/unit/test_utils.py`: Test `generate_default_password("alice")` returns `"ecila"`.

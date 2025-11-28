@@ -80,7 +80,7 @@
 
 * **Scope:** `src/services/auth_service.py`
   * [x] **(Red)** Create `tests/unit/test_auth_service.py`. Mock `UserRepository`.
-  * [ ] **(Green)** Implement `AuthService` class.
+  * [x] **(Green)** Implement `AuthService` class.
     * **DI:** `__init__(self, user_repo: AbstractRepository)`.
     * **Method:** `login(username, password) -> Token`.
 
