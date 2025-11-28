@@ -1,5 +1,5 @@
 import pytest
-from src.models.user import User
+from src.models import User
 
 
 def test_user_password_hashing():
@@ -18,3 +18,18 @@ def test_user_creation():
     user = User(username="testuser", role="student")
     assert user.username == "testuser"
     assert user.role == "student"
+
+
+def test_user_soft_delete():
+    """Test soft delete functionality."""
+    user = User(username="testuser", role="student", is_active=True)
+    assert user.is_active is True
+    assert user.deleted_at is None
+
+    user.soft_delete()
+    assert user.is_active is False
+    assert user.deleted_at is not None
+
+    user.restore()
+    assert user.is_active is True
+    assert user.deleted_at is None
