@@ -15,3 +15,5 @@ def test_increment_misses():
     assert student.missed_classes == 1
     student.increment_misses()
     assert student.missed_classes == 2
+
+
