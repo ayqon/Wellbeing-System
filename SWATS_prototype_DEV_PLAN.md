@@ -45,9 +45,9 @@
 #### **Dev 4: Academic Hierarchy**
 
 * **Scope:** `src/models/academic.py`
-  * [ ] **(Red)** Create `tests/unit/test_academic_models.py`.
-  * [ ] **(Green)** Implement `Course` and `Module` classes.
-  * [ ] **(Green)** Implement `StudentModule` (Association Object Pattern).
+  * [x] **(Red)** Create `tests/unit/test_academic_models.py`.
+  * [x] **(Green)** Implement `Course` and `Module` classes.
+  * [x] **(Green)** Implement `StudentModule` (Association Object Pattern).
 
 #### **Dev 5: Tracking Entities**
 
