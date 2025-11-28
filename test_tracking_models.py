@@ -66,6 +66,39 @@ class WellbeingSurvey:
                     )
             except ValueError:
                 print("Suggested Fix: Review the risk calculation logic for silent struggle scenarios.")
+                
+    class ModuleGrade:
+        def __init__(self, module_name, grade):
+            self.module_name = module_name
+            self.grade = grade
+
+        def is_passing(self, threshold=50):
+            return self.grade >= threshold
+
+
+    class AttendanceRegister:
+        def __init__(self):
+            self.attendance_records = {}
+
+        def record_attendance(self, student_id, date, present):
+            if student_id not in self.attendance_records:
+                self.attendance_records[student_id] = []
+            self.attendance_records[student_id].append({'date': date, 'present': present})
+
+        def get_attendance_percentage(self, student_id):
+            if student_id not in self.attendance_records:
+                return 0
+            records = self.attendance_records[student_id]
+            if not records:
+                return 0
+            present_count = sum(1 for record in records if record['present'])
+            return (present_count / len(records)) * 100
+
+
+# Run tests
+WellbeingSurvey.test_high_stress_risk_calculation.is_critical()
+WellbeingSurvey.test_disengagement_risk_calculation.is_critical()
+WellbeingSurvey.test_silent_struggle_risk_calculation.is_critical()
 
 
 
