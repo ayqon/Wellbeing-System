@@ -94,9 +94,9 @@
 #### **Dev 3: Parser Strategy**
 
 * **Scope:** `src/utils/parsers.py`
-  * [ ] **(Red)** Create `tests/unit/test_parsers.py`.
-  * [ ] **(Green)** Define `AbstractParser` (ABC) with method `parse(file_stream)`.
-  * [ ] **(Green)** Implement `UserCSVParser` and `GradeCSVParser` classes (Polymorphism).
+  * [x] **(Red)** Create `tests/unit/test_parsers.py`.
+  * [x] **(Green)** Define `AbstractParser` (ABC) with method `parse(file_stream)`.
+  * [x] **(Green)** Implement `UserCSVParser` and `GradeCSVParser` classes (Polymorphism).
 
 #### **Dev 4: Survey Domain Service**
 
