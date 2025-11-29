@@ -155,8 +155,8 @@
 #### **Dev 4: Survey Controller**
 
 * **Scope:** `src/api/surveys.py`
-  * [ ] **(Red)** Create `tests/integration/test_survey_routes.py`.
-  * [ ] **(Green)** Implement Routes calling `SurveyService.submit()` and `SurveyService.process_skip()`.
+  * [x] **(Red)** Create `tests/integration/test_survey_routes.py`.
+  * [x] **(Green)** Implement Routes calling `SurveyService.submit()` and `SurveyService.process_skip()`.
 
 #### **Dev 5: Analytics Service (Composition)**
 

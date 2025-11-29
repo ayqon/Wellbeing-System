@@ -12,6 +12,8 @@ def create_app(config_name="default"):
     app.container = container
     
     # Register Blueprints (Placeholder for future tasks)
+    from src.api.surveys import survey_bp
+    app.register_blueprint(survey_bp, url_prefix='/api/surveys')
     # from src.api.auth import auth_bp
     # app.register_blueprint(auth_bp)
     
