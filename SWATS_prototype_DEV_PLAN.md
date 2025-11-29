@@ -101,8 +101,8 @@
 #### **Dev 4: Survey Domain Service**
 
 * **Scope:** `src/services/survey_service.py`
-  * [ ] **(Red)** Create `tests/unit/test_survey_service.py`. Mock `StudentRepository`.
-  * [ ] **(Green)** Implement `SurveyService` class.
+  * [x] **(Red)** Create `tests/unit/test_survey_service.py`. Mock `StudentRepository`.
+  * [x] **(Green)** Implement `SurveyService` class.
     * **DI:** `__init__(self, survey_repo, student_repo)`.
     * **Method:** `process_skip(student_id)`: Encapsulates the logic of calling `student.increment_misses()`.
 
