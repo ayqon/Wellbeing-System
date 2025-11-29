@@ -69,12 +69,12 @@
 ## **6. The Risk Engine (Algorithm)**
 
 * **Calculation Logic**
-  * [ ] **(Red)** Create `tests/unit/test_risk_engine.py`:
+  * [x] **(Red)** Create `tests/unit/test_risk_engine.py`:
     * Test 1: High Stress (5) + Low Sleep (2) = High Risk.
     * Test 2: High Misses (5) adds 12.5 points (50/4).
     * Test 3: High Grade (100) lowers risk.
     * **Formula:** `Risk = (Stress*20 + (100-Sleep*8) + Misses*10 + (100-Grade)) / 4`
-    * [ ] **(Green)** Implement `src/services/risk_engine.py`: `calculate_risk(student)` function.
+    * [x] **(Green)** Implement `src/services/risk_engine.py`: `calculate_risk(student)` function.
 * **Integration**
   * [ ] **(Refactor)** Trigger `calculate_risk` automatically when Analytics endpoints are called (On-Demand).
 
@@ -105,9 +105,9 @@
 
 * **Basic Views**
   * [ ] **(Green)** Create `templates/login.html`.
-  * [ ] **(Green)** Create `templates/student_survey.html` (Form + Skip Button).
-  * [ ] **(Green)** Create `templates/officer_dashboard.html` (Table with Risk Highlighting).
-  * [ ] **(Green)** Create `templates/director_dashboard.html` (Anonymized Table).
+  * [x] **(Green)** Create `templates/student_survey.html` (Form + Skip Button).
+  * [x] **(Green)** Create `templates/officer_dashboard.html` (Table with Risk Highlighting).
+  * [x] **(Green)** Create `templates/director_dashboard.html` (Anonymized Table).
 * **Wiring**
   * [ ] **(Green)** Create `src/api/views.py`: Render templates and connect to API endpoints via AJAX or Form Submit.
 

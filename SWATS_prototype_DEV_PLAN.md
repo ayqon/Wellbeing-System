@@ -87,9 +87,9 @@
 #### **Dev 2: Repository Pattern**
 
 * **Scope:** `src/repositories/`
-  * [ ] **(Red)** Create `tests/unit/test_base_repo.py`.
-  * [ ] **(Green)** Create `src/repositories/base.py`: Define `AbstractRepository` (ABC) and `SqlAlchemyRepository` (Generic Implementation).
-  * [ ] **(Green)** Create `UserRepository` and `StudentRepository` classes inheriting from `SqlAlchemyRepository`.
+  * [x] **(Red)** Create `tests/unit/test_base_repo.py`.
+  * [x] **(Green)** Create `src/repositories/base.py`: Define `AbstractRepository` (ABC) and `SqlAlchemyRepository` (Generic Implementation).
+  * [x] **(Green)** Create `UserRepository` and `StudentRepository` classes inheriting from `SqlAlchemyRepository`.
 
 #### **Dev 3: Parser Strategy**
 
@@ -109,16 +109,16 @@
 #### **Dev 5: Risk Engine (Encapsulation)**
 
 * **Scope:** `src/services/risk_engine.py`
-  * [ ] **(Red)** Create `tests/unit/test_risk_engine.py`.
-  * [ ] **(Green)** Implement `RiskCalculator` class.
+  * [x] **(Red)** Create `tests/unit/test_risk_engine.py`.
+  * [x] **(Green)** Implement `RiskCalculator` class.
     * **OOP:** Make weights constants/class attributes.
     * **Method:** `compute(metrics: StudentMetricsDTO) -> float`.
 
 #### **Dev 6: View Objects (Templates)**
 
 * **Scope:** `src/templates/`
-  * [ ] **(Green)** Create Jinja2 templates (View layer).
-  * [ ] **(Green)** Ensure templates expect Objects (e.g., `{{ student.risk_score }}`) not Dictionaries.
+  * [x] **(Green)** Create Jinja2 templates (View layer).
+  * [x] **(Green)** Ensure templates expect Objects (e.g., `{{ student.risk_score }}`) not Dictionaries.
 
 **🌙 Nightly Refactor (Dev 1):**
 
