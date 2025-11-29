@@ -1,24 +1,57 @@
-from datetime import datetime, timezone
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, DateTime, Boolean
+from abc import ABC, abstractmethod
+from typing import Generic, TypeVar, Type, Optional, List, Any
+from sqlalchemy.orm import Session
+from src.models.base import BaseModel
 
-Base = declarative_base()
+T = TypeVar("T", bound=BaseModel)
 
-class BaseModel(Base):
-    __abstract__ = True
+class AbstractRepository(ABC, Generic[T]):
+    @abstractmethod
+    def add(self, entity: T) -> T:
+        pass
 
-class TimestampMixin:
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
+    @abstractmethod
+    def get(self, id: Any) -> Optional[T]:
+        pass
 
-class SoftDeleteMixin:
-    is_active = Column(Boolean, default=True, nullable=False)
-    deleted_at = Column(DateTime, nullable=True)
+    @abstractmethod
+    def list(self) -> List[T]:
+        pass
 
-    def soft_delete(self):
-        self.is_active = False
-        self.deleted_at = datetime.now(timezone.utc)
+    @abstractmethod
+    def update(self, entity: T) -> T:
+        pass
 
-    def restore(self):
-        self.is_active = True
-        self.deleted_at = None
+    @abstractmethod
+    def delete(self, id: Any) -> bool:
+        pass
+
+class SqlAlchemyRepository(AbstractRepository[T]):
+    def __init__(self, session: Session, model: Type[T]):
+        self.session = session
+        self.model = model
+
+    def add(self, entity: T) -> T:
+        self.session.add(entity)
+        self.session.commit()
+        self.session.refresh(entity)
+        return entity
+
+    def get(self, id: Any) -> Optional[T]:
+        return self.session.query(self.model).filter(self.model.id == id).first()
+
+    def list(self) -> List[T]:
+        return self.session.query(self.model).all()
+
+    def update(self, entity: T) -> T:
+        self.session.merge(entity)
+        self.session.commit()
+        return entity
+
+    def delete(self, id: Any) -> bool:
+        entity = self.get(id)
+        if entity:
+            self.session.delete(entity)
+            self.session.commit()
+            return True
+        return False
