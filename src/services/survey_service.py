@@ -80,10 +80,10 @@ class SurveyService:
             status=SurveyStatus.SKIPPED,
             is_critical=False
         )
-        self.survey_repo.create(survey)
+        self.survey_repo.add(survey)
         
         student.increment_misses()
-        self.student_repo.save(student)
+        self.student_repo.update(student)
     
     def submit_response(self, student_id: str, week: int, year: int, 
                        stress: int, sleep: int) -> WellbeingSurvey:
@@ -152,13 +152,13 @@ class SurveyService:
         
         # Save survey and reset misses
         if survey.survey_id:  # Existing survey (was SKIPPED)
-            self.survey_repo.save(survey)
+            self.survey_repo.update(survey)
         else:  # New survey
-            self.survey_repo.create(survey)
+            self.survey_repo.add(survey)
         
         # Reset consecutive misses since survey completed
         student.reset_misses()
-        self.student_repo.save(student)
+        self.student_repo.update(student)
         
         return survey
     

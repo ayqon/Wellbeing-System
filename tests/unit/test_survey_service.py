@@ -46,14 +46,14 @@ class TestSurveyService:
         service.process_skip(student_id="12345", week=10, year=2025)
         
         # Should create survey with SKIPPED status
-        mock_survey_repo.create.assert_called_once()
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        mock_survey_repo.add.assert_called_once()
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.status == SurveyStatus.SKIPPED
         assert created_survey.is_critical is False
         
         # Should increment student's misses
         fake_student.increment_misses.assert_called_once()
-        mock_student_repo.save.assert_called_once_with(fake_student)
+        mock_student_repo.update.assert_called_once_with(fake_student)
 
     def test_process_skip_raises_error_if_survey_completed(self):
         """Test process_skip raises error when survey already completed"""
@@ -74,7 +74,7 @@ class TestSurveyService:
             service.process_skip(student_id="12345", week=10, year=2025)
         
         # Should NOT create or increment
-        mock_survey_repo.create.assert_not_called()
+        mock_survey_repo.add.assert_not_called()
 
     def test_process_skip_raises_error_if_survey_already_skipped(self):
         """Test process_skip raises error when survey already skipped"""
@@ -144,15 +144,15 @@ class TestSurveyService:
         )
         
         # Should create new survey
-        mock_survey_repo.create.assert_called_once()
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        mock_survey_repo.add.assert_called_once()
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.status == SurveyStatus.COMPLETED
         assert created_survey.stress == 3
         assert created_survey.sleep == 7
         
         # Should reset misses
         fake_student.reset_misses.assert_called_once()
-        mock_student_repo.save.assert_called_once_with(fake_student)
+        mock_student_repo.update.assert_called_once_with(fake_student)
 
     def test_submit_response_validates_stress_below_minimum(self):
         """Test submit_response rejects stress < 1"""
@@ -249,8 +249,8 @@ class TestSurveyService:
         result = service.submit_response("12345", 10, 2025, stress=3, sleep=7)
         
         # Should update existing survey, not create new
-        mock_survey_repo.save.assert_called_once()
-        mock_survey_repo.create.assert_not_called()
+        mock_survey_repo.update.assert_called_once()
+        mock_survey_repo.add.assert_not_called()
         
         # Verify survey was updated
         assert fake_survey.status == SurveyStatus.COMPLETED
@@ -270,7 +270,7 @@ class TestSurveyService:
         service = SurveyService(mock_survey_repo, mock_student_repo)
         service.submit_response("12345", 10, 2025, stress=5, sleep=8)
         
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.is_critical is True
 
     def test_submit_response_marks_critical_low_sleep(self):
@@ -286,7 +286,7 @@ class TestSurveyService:
         service = SurveyService(mock_survey_repo, mock_student_repo)
         service.submit_response("12345", 10, 2025, stress=2, sleep=3)
         
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.is_critical is True
 
     def test_submit_response_not_critical_normal_values(self):
@@ -302,7 +302,7 @@ class TestSurveyService:
         service = SurveyService(mock_survey_repo, mock_student_repo)
         service.submit_response("12345", 10, 2025, stress=3, sleep=7)
         
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.is_critical is False
 
     def test_submit_response_critical_boundary_stress(self):
@@ -319,7 +319,7 @@ class TestSurveyService:
         
         # Stress = 4 should be critical
         service.submit_response("12345", 10, 2025, stress=4, sleep=8)
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.is_critical is True
 
     def test_submit_response_critical_boundary_sleep(self):
@@ -336,11 +336,11 @@ class TestSurveyService:
         
         # Sleep = 4 should be critical
         service.submit_response("12345", 10, 2025, stress=2, sleep=4)
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.is_critical is True
         
         # Sleep = 5 should NOT be critical
-        mock_survey_repo.create.reset_mock()
+        mock_survey_repo.add.reset_mock()
         service.submit_response("12345", 11, 2025, stress=2, sleep=5)
-        created_survey = mock_survey_repo.create.call_args[0][0]
+        created_survey = mock_survey_repo.add.call_args[0][0]
         assert created_survey.is_critical is False
