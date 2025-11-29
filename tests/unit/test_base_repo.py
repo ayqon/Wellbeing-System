@@ -23,12 +23,6 @@ def db_session():
         Session: A SQLAlchemy session connected to an in-memory database.
     """
     # Use an in-memory SQLite database for fast, isolated tests.
-    engine = create_engine("sqlite:///:memory:")
-    # Create the tables defined in the Base metadata (including MockModel).
-    Base.metadata.create_all(bind=engine)
-    
-    # Create a session factory.
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
     
     try:
