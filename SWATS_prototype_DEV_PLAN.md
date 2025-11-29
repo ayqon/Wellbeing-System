@@ -31,8 +31,8 @@
 #### **Dev 2: User Entity**
 
 * **Scope:** `src/models/user.py`
-  * [ ] **(Red)** Create `tests/unit/test_user_model.py`. Test `check_password` method.
-  * [ ] **(Green)** Implement `User` class (Inherits `BaseModel`, `SoftDeleteMixin`).
+  * [x] **(Red)** Create `tests/unit/test_user_model.py`. Test `check_password` method.
+  * [x] **(Green)** Implement `User` class (Inherits `BaseModel`, `SoftDeleteMixin`).
     * **OOP:** Encapsulate password hashing inside `set_password()` and `check_password()` methods.
 
 #### **Dev 3: Student Entity**
@@ -45,9 +45,9 @@
 #### **Dev 4: Academic Hierarchy**
 
 * **Scope:** `src/models/academic.py`
-  * [ ] **(Red)** Create `tests/unit/test_academic_models.py`.
-  * [ ] **(Green)** Implement `Course` and `Module` classes.
-  * [ ] **(Green)** Implement `StudentModule` (Association Object Pattern).
+  * [x] **(Red)** Create `tests/unit/test_academic_models.py`.
+  * [x] **(Green)** Implement `Course` and `Module` classes.
+  * [x] **(Green)** Implement `StudentModule` (Association Object Pattern).
 
 #### **Dev 5: Tracking Entities**
 
@@ -60,15 +60,15 @@
 #### **Dev 6: Privacy Object**
 
 * **Scope:** `src/utils/privacy.py`
-  * [ ] **(Red)** Create `tests/unit/test_anonymizer.py`.
-  * [ ] **(Green)** Implement `Anonymizer` class.
+  * [x] **(Red)** Create `tests/unit/test_anonymizer.py`.
+  * [x] **(Green)** Implement `Anonymizer` class.
     * **OOP:** Method `mask_identity(user_id: str) -> str`. Make the salt a private attribute `_salt`.
 
 **🌙 Nightly Refactor (Dev 1):**
 
-> * Ensure all Models inherit correctly from `BaseModel`.
-> * Resolve circular dependencies in `src/models/__init__.py`.
-> * Generate Alembic Migrations.
+> * [x] Ensure all Models inherit correctly from `BaseModel`.
+> * [x] Resolve circular dependencies in `src/models/__init__.py`.
+> * [ ] Generate Alembic Migrations.
 
 ---
 
@@ -80,7 +80,7 @@
 
 * **Scope:** `src/services/auth_service.py`
   * [x] **(Red)** Create `tests/unit/test_auth_service.py`. Mock `UserRepository`.
-  * [ ] **(Green)** Implement `AuthService` class.
+  * [x] **(Green)** Implement `AuthService` class.
     * **DI:** `__init__(self, user_repo: AbstractRepository)`.
     * **Method:** `login(username, password) -> Token`.
 
@@ -101,16 +101,16 @@
 #### **Dev 4: Survey Domain Service**
 
 * **Scope:** `src/services/survey_service.py`
-  * [ ] **(Red)** Create `tests/unit/test_survey_service.py`. Mock `StudentRepository`.
-  * [ ] **(Green)** Implement `SurveyService` class.
+  * [x] **(Red)** Create `tests/unit/test_survey_service.py`. Mock `StudentRepository`.
+  * [x] **(Green)** Implement `SurveyService` class.
     * **DI:** `__init__(self, survey_repo, student_repo)`.
     * **Method:** `process_skip(student_id)`: Encapsulates the logic of calling `student.increment_misses()`.
 
 #### **Dev 5: Risk Engine (Encapsulation)**
 
 * **Scope:** `src/services/risk_engine.py`
-  * [x] **(Red)** Create `tests/unit/test_risk_engine.py`.
-  * [x] **(Green)** Implement `RiskCalculator` class.
+  * [ ] **(Red)** Create `tests/unit/test_risk_engine.py`.
+  * [ ] **(Green)** Implement `RiskCalculator` class.
     * **OOP:** Make weights constants/class attributes.
     * **Method:** `compute(metrics: StudentMetricsDTO) -> float`.
 

@@ -19,24 +19,24 @@
 ## **2. Database Layer (The Schema)**
 
 * **User & Student Models**
-  * [ ] **(Red)** Create `tests/unit/test_models.py`: Test `User` creation and password hashing logic.
-  * [ ] **(Green)** Implement `src/models/user.py`: `User` model (id, username, role, hash).
-  * [ ] **(Green)** Implement `src/models/student.py`: `Student` model (FK `user_id`, `risk_score`, `misses`).
+  * [x] **(Red)** Create `tests/unit/test_models.py`: Test `User` creation and password hashing logic.
+  * [x] **(Green)** Implement `src/models/user.py`: `User` model (id, username, role, hash).
+  * [x] **(Green)** Implement `src/models/student.py`: `Student` model (FK `user_id`, `risk_score`, `misses`).
   * [ ] **(Refactor)** Add SQLAlchemy relationships (User $\leftrightarrow$ Student).
 * **Academic Structure Models**
-  * [ ] **(Green)** Implement `src/models/course.py`: `Course` model (FK `director_id`).
-  * [ ] **(Green)** Implement `src/models/module.py`: `Module` model.
-  * [ ] **(Green)** Implement `src/models/enrollment.py`: `StudentModule` association table.
+  * [x] **(Green)** Implement `src/models/course.py`: `Course` model (FK `director_id`).
+  * [x] **(Green)** Implement `src/models/module.py`: `Module` model.
+  * [x] **(Green)** Implement `src/models/enrollment.py`: `StudentModule` association table.
 * **Data Models**
-  * [ ] **(Green)** Implement `src/models/survey.py`: `WellbeingSurvey` (stress, sleep, status).
-  * [ ] **(Green)** Implement `src/models/academic.py`: `ModuleGrade` and `AttendanceRegister`.
+  * [x] **(Green)** Implement `src/models/survey.py`: `WellbeingSurvey` (stress, sleep, status).
+  * [x] **(Green)** Implement `src/models/academic.py`: `ModuleGrade` and `AttendanceRegister`.
   * [ ] **(Green)** Run `alembic revision --autogenerate` to create the initial migration.
 
 ## **3. Authentication & Core Logic**
 
 * **Auth Service**
-  * [ ] **(Red)** Create `tests/unit/test_auth.py`: Test login with valid/invalid credentials.
-  * [ ] **(Green)** Implement `src/services/auth_service.py`: `authenticate_user` returning JWT.
+  * [x] **(Red)** Create `tests/unit/test_auth_service.py`: Test login with valid/invalid credentials.
+  * [x] **(Green)** Implement `src/services/auth_service.py`: `authenticate_user` returning JWT.
   * [ ] **(Green)** Implement `src/api/auth.py`: `POST /login` endpoint.
 * **Utility: Password Reversal**
   * [ ] **(Red)** Create `tests/unit/test_utils.py`: Test `generate_default_password("alice")` returns `"ecila"`.
