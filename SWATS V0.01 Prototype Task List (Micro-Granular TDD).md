@@ -16,6 +16,13 @@
   * [x] **(Green)** Implement `src/core/database.py` (SQLAlchemy `db` instance).
   * [ ] **(Green)** Create `tests/conftest.py` with `db_session` fixture (SQLite memory).
 
+## **1.5. Service Orchestration (Day 3)**
+
+* **Dependency Injection**
+  * [x] **(Red)** Create `tests/unit/test_container.py`: Test Service/Repo wiring.
+  * [x] **(Green)** Implement `src/container.py`: DI Container class.
+  * [x] **(Green)** Implement `src/app.py`: App factory with Container initialization.
+
 ## **2. Database Layer (The Schema)**
 
 * **User & Student Models**

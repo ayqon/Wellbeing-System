@@ -134,9 +134,9 @@
 #### **Dev 1 : Dependency Injection Container**
 
 * **Scope:** `src/container.py`, `src/app.py`
-  * [ ] **(Red)** Create `tests/unit/test_container.py`.
-  * [ ] **(Green)** Implement a simple Container class or factory that instantiates Repos and injects them into Services.
-  * [ ] **(Green)** Register Blueprints.
+  * [x] **(Red)** Create `tests/unit/test_container.py`.
+  * [x] **(Green)** Implement a simple Container class or factory that instantiates Repos and injects them into Services.
+  * [x] **(Green)** Register Blueprints.
 
 #### **Dev 2: Import Orchestrator**
 
