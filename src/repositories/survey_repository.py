@@ -1,9 +1,9 @@
 from typing import Optional
-from src.repositories.base import BaseRepository
+from src.repositories.base import SqlAlchemyRepository
 from src.models.survey import WellbeingSurvey
 from sqlalchemy.orm import Session
 
-class SurveyRepository(BaseRepository[WellbeingSurvey]):
+class SurveyRepository(SqlAlchemyRepository[WellbeingSurvey]):
     def __init__(self, session: Session):
         super().__init__(session, WellbeingSurvey)
 
