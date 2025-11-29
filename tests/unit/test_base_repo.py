@@ -23,13 +23,21 @@ def db_session():
         Session: A SQLAlchemy session connected to an in-memory database.
     """
     # Use an in-memory SQLite database for fast, isolated tests.
-    db = SessionLocal()
+    # Initialize the Database singleton
+    from src.core.database import Database
+    db_instance = Database()
+    
+    # Create tables for the mock model
+    MockModel.metadata.create_all(bind=db_instance.engine)
+    
+    session = db_instance.SessionLocal()
     
     try:
-        yield db
+        yield session
     finally:
-        # Ensure the session is closed after the test completes.
-        db.close()
+        session.close()
+        # Drop tables after test
+        MockModel.metadata.drop_all(bind=db_instance.engine)
 
 @pytest.fixture
 def repository(db_session):
