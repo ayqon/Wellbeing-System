@@ -14,8 +14,8 @@ def create_app(config_name="default"):
     # Register Blueprints (Placeholder for future tasks)
     from src.api.surveys import survey_bp
     app.register_blueprint(survey_bp, url_prefix='/api/surveys')
-    # from src.api.auth import auth_bp
-    # app.register_blueprint(auth_bp)
+    from src.api.auth import auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
     
     from src.api.analytics import analytics_bp
     app.register_blueprint(analytics_bp, url_prefix='/analytics')

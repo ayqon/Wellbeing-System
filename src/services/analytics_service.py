@@ -110,3 +110,51 @@ class AnalyticsService:
             average_sleep=avg_sleep
         )
 
+    def get_officer_snapshot(self):
+        """
+        Get risk snapshot for all students (Officer View).
+        Calculates risk on-demand based on latest data.
+        """
+        try:
+            students = self.student_repo.list()
+        except Exception as e:
+            raise AnalyticsServiceError(f"Failed to fetch students: {e}")
+            
+        results = []
+        for student in students:
+            # Fetch latest survey for metrics
+            # Assuming survey_repo is available
+            stress = 0
+            sleep = 8
+            
+            if self.survey_repo:
+                # This is inefficient (N+1), but acceptable for prototype
+                surveys = self.survey_repo.get_by_student(student.student_id)
+                if surveys:
+                    latest = surveys[-1] # Assuming chronological order
+                    stress = latest.stress or 0
+                    sleep = latest.sleep or 8
+            
+            # Prepare metrics
+            from src.services.risk_engine import StudentMetricsDTO
+            metrics = StudentMetricsDTO(
+                stress=stress,
+                sleep=sleep,
+                misses=student.misses if hasattr(student, 'misses') else student.missed_surveys,
+                grade=100.0 # Placeholder for grade
+            )
+            
+            # Calculate risk
+            risk_score = self.risk_calculator.compute(metrics)
+            
+            # Update student record (cache)
+            student.current_risk_score = risk_score
+            # self.student_repo.update(student) # Optional: persist to DB
+            
+            results.append({
+                "student_id": student.student_id,
+                "username": student.name,
+                "risk_score": risk_score
+            })
+            
+        return results

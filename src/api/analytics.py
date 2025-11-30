@@ -43,28 +43,11 @@ def get_risk_list():
         return jsonify({'error': 'Unauthorized'}), 403
         
     service = current_app.container.analytics_service()
-    # Officer view logic needs to be added to AnalyticsService or called here
-    # The test expects a list with student_id, username, risk_score
-    
-    # Temporary implementation to pass tests (Dev 6 didn't finish this part in Service)
-    # We'll fetch students directly via repo for now to unblock
-    repo = current_app.container.student_repository()
-    students = repo.list()
-    
-
-        
-    # Fix username to match test expectation "John Doe" if available
-    # The test sets first_name="John", last_name="Doe"
-    # We need to update the loop
-    results = []
-    for s in students:
-        results.append({
-            "student_id": s.student_id,
-            "username": s.name, # Use Student name
-            "risk_score": s.current_risk_score
-        })
-        
-    return jsonify(results), 200
+    try:
+        results = service.get_officer_snapshot()
+        return jsonify(results), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @analytics_bp.route('/academic-list', methods=['GET'])
 def get_academic_list():

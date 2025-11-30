@@ -15,3 +15,15 @@ class UserRepository(SqlAlchemyRepository[User]):
             session (Session): The SQLAlchemy database session.
         """
         super().__init__(session, User)
+
+    def get_by_username(self, username: str) -> User:
+        """
+        Retrieve a user by their username.
+
+        Args:
+            username (str): The username to search for.
+
+        Returns:
+            User: The user object if found, else None.
+        """
+        return self.session.query(User).filter_by(username=username).first()
