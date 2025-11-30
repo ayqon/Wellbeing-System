@@ -1,4 +1,4 @@
-from risk_engine import riskcalculator as rc
+from src.services.risk_engine import riskcalculator as rc
 
 class WellbeingSurvey:
     class test_high_stress_risk_calculation:
