@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey, Float
 from src.models.base import BaseModel, TimestampMixin
 
 
@@ -21,6 +21,8 @@ class Student(BaseModel, TimestampMixin):
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     missed_surveys = Column(Integer, default=0)
+    course_code = Column(String, nullable=True) # Added for Analytics
+    current_risk_score = Column(Float, default=0.0) # Added for Analytics
 
     def __init__(self, **kwargs):
         """

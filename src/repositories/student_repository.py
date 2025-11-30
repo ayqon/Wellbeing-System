@@ -28,3 +28,6 @@ class StudentRepository(SqlAlchemyRepository[Student]):
             Optional[Student]: The student if found, otherwise None
         """
         return self.session.query(Student).filter_by(student_id=student_id).first()
+
+    def fetch_by_course(self, course_code: str):
+        return self.session.query(Student).filter_by(course_code=course_code).all()

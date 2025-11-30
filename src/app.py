@@ -17,6 +17,9 @@ def create_app(config_name="default"):
     # from src.api.auth import auth_bp
     # app.register_blueprint(auth_bp)
     
+    from src.api.analytics import analytics_bp
+    app.register_blueprint(analytics_bp, url_prefix='/analytics')
+    
     @app.route("/health")
     def health():
         return {"status": "ok"}

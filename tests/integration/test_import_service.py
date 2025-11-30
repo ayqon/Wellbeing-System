@@ -1,6 +1,6 @@
 import pytest
 import io
-from src.services.strategies.import_service import ImportService
+from src.services.import_service import ImportService
 from src.models.user import User
 from src.models.student import Student
 from src.models.academic import ModuleGrade, AttendanceRegister, Module, Course, StudentModule
@@ -8,7 +8,7 @@ from datetime import datetime
 
 from src.repositories.user_repository import UserRepository
 from src.repositories.student_repository import StudentRepository
-from src.services.strategies.user_csv_parser import UserCSVParser
+from src.utils.parsers import UserCSVParser
 
 @pytest.fixture
 def import_service(db_session):
@@ -39,7 +39,7 @@ def test_process_user_csv_valid(import_service, db_session):
     - User 'alice' should exist in the database with role 'student'.
     - Student 'S12345' should exist with correct name and email.
     """
-    csv_content = "username,password,role,student_id,name,email\n" \
+    csv_content = "username,password_hash,role,student_id,name,email\n" \
                   "alice,password123,student,S12345,Alice Smith,alice@example.com\n" \
                   "bob,password456,student,S67890,Bob Jones,bob@example.com"
     file_stream = io.StringIO(csv_content)

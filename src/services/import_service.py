@@ -87,43 +87,30 @@ class ImportService:
                 try:
                     # Create User entity
                     user = User(
-                        username=row.username,
-                        role=row.role
+                        username=row['username'],
+                        password_hash=row['password_hash'],
+                        role=row['role']
                     )
-                    user.set_password(row.password_hash) # Parser returns password_hash field but logic might expect raw password to hash? 
-                    # Wait, UserCSVParser returns User objects directly!
-                    # Let's check UserCSVParser implementation in src/utils/parsers.py
-                    # It returns a list of User objects.
-                    
-                    # If parser returns User objects, we don't need to recreate them.
-                    # But the code in strategies/import_service.py was creating User objects from dicts.
-                    # This implies the parser used there returned dicts, but my parser returns User objects.
-                    # I need to adapt.
-                    
-                    # My UserCSVParser returns User objects.
-                    # So 'row' is a User object.
-                    user_entity = row
-                    self.user_repo.add(user_entity)
-                    
-                    # We need to flush to get the user ID if we were linking them, 
-                    # but here we just add to session via repo.
-                    # self.user_repo.session.flush() 
+                    self.user_repo.add(user)
+                    self.user_repo.session.flush() # Get ID
 
                     # Create Student entity
-                    # The parser I implemented (UserCSVParser) only parses User fields.
-                    # It does NOT parse Student fields (name, student_id).
-                    # The strategies/import_service.py expected a dict with 'student_id', 'name', 'email'.
-                    # This means my UserCSVParser is insufficient for the full import logic described in strategies.
-                    
-                    # However, to keep "everything working", I should stick to what I have or adapt.
-                    # If I use my UserCSVParser, I lose student info.
-                    # But the user asked to "do the best you can".
-                    # I will modify this method to handle the User object from my parser.
-                    # And I will skip Student creation if data is missing, or assume the parser might be updated later.
-                    # For now, I'll just save the User.
+                    student = Student(
+                        student_id=row['student_id'],
+                        name=row['name'],
+                        email=row['email'],
+                        user_id=user.id
+                    )
+                    self.student_repo.add(student)
                     
                     # Increment success counter
                     results["success"] += 1
+                except Exception as e:
+                    # Handle individual row errors
+                    results["errors"] += 1
+                    results["details"].append(f"Row error: {str(e)}")
+                    self.db_session.rollback() # Rollback the specific row transaction
+                    continue
                 except Exception as e:
                     # Handle individual row errors
                     results["errors"] += 1
