@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, ForeignKey
 from src.models.base import BaseModel, TimestampMixin
 
 
@@ -12,6 +12,9 @@ class Student(BaseModel, TimestampMixin):
 
     # Primary key - manually added since BaseModel is empty
     id = Column(Integer, primary_key=True, autoincrement=True)
+    
+    # Foreign Key to User
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
     
     # Business fields
     student_id = Column(String, unique=True, nullable=False)
