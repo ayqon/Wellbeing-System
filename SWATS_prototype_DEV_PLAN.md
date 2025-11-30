@@ -161,8 +161,8 @@
 #### **Dev 5: Analytics Service (Composition)**
 
 * **Scope:** `src/services/analytics_service.py`
-  * [ ] **(Red)** Create `tests/integration/test_analytics_service.py`.
-  * [ ] **(Green)** Implement `AnalyticsService` class.
+  * [x] **(Red)** Create `tests/integration/test_analytics_service.py`.
+  * [x] **(Green)** Implement `AnalyticsService` class.
     * **DI:** Inject `RiskCalculator`, `Anonymizer`, and `StudentRepository`.
     * **Method:** `get_director_view(course_id)`: Orchestrates data fetch $\to$ anonymization $\to$ risk calc.
 
