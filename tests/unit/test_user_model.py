@@ -33,4 +33,4 @@ def test_user_soft_delete():
     user.restore()
     assert user.is_active is True
     assert user.deleted_at is None
-##
+###

@@ -31,8 +31,8 @@
 #### **Dev 2: User Entity**
 
 * **Scope:** `src/models/user.py`
-  * [ ] **(Red)** Create `tests/unit/test_user_model.py`. Test `check_password` method.
-  * [ ] **(Green)** Implement `User` class (Inherits `BaseModel`, `SoftDeleteMixin`).
+  * [x] **(Red)** Create `tests/unit/test_user_model.py`. Test `check_password` method.
+  * [x] **(Green)** Implement `User` class (Inherits `BaseModel`, `SoftDeleteMixin`).
     * **OOP:** Encapsulate password hashing inside `set_password()` and `check_password()` methods.
 
 #### **Dev 3: Student Entity**
@@ -45,9 +45,9 @@
 #### **Dev 4: Academic Hierarchy**
 
 * **Scope:** `src/models/academic.py`
-  * [ ] **(Red)** Create `tests/unit/test_academic_models.py`.
-  * [ ] **(Green)** Implement `Course` and `Module` classes.
-  * [ ] **(Green)** Implement `StudentModule` (Association Object Pattern).
+  * [x] **(Red)** Create `tests/unit/test_academic_models.py`.
+  * [x] **(Green)** Implement `Course` and `Module` classes.
+  * [x] **(Green)** Implement `StudentModule` (Association Object Pattern).
 
 #### **Dev 5: Tracking Entities**
 
@@ -60,15 +60,15 @@
 #### **Dev 6: Privacy Object**
 
 * **Scope:** `src/utils/privacy.py`
-  * [ ] **(Red)** Create `tests/unit/test_anonymizer.py`.
-  * [ ] **(Green)** Implement `Anonymizer` class.
+  * [x] **(Red)** Create `tests/unit/test_anonymizer.py`.
+  * [x] **(Green)** Implement `Anonymizer` class.
     * **OOP:** Method `mask_identity(user_id: str) -> str`. Make the salt a private attribute `_salt`.
 
 **🌙 Nightly Refactor (Dev 1):**
 
-> * Ensure all Models inherit correctly from `BaseModel`.
-> * Resolve circular dependencies in `src/models/__init__.py`.
-> * Generate Alembic Migrations.
+> * [x] Ensure all Models inherit correctly from `BaseModel`.
+> * [x] Resolve circular dependencies in `src/models/__init__.py`.
+> * [ ] Generate Alembic Migrations.
 
 ---
 
@@ -80,29 +80,29 @@
 
 * **Scope:** `src/services/auth_service.py`
   * [x] **(Red)** Create `tests/unit/test_auth_service.py`. Mock `UserRepository`.
-  * [ ] **(Green)** Implement `AuthService` class.
+  * [x] **(Green)** Implement `AuthService` class.
     * **DI:** `__init__(self, user_repo: AbstractRepository)`.
     * **Method:** `login(username, password) -> Token`.
 
 #### **Dev 2: Repository Pattern**
 
 * **Scope:** `src/repositories/`
-  * [ ] **(Red)** Create `tests/unit/test_base_repo.py`.
-  * [ ] **(Green)** Create `src/repositories/base.py`: Define `AbstractRepository` (ABC) and `SqlAlchemyRepository` (Generic Implementation).
-  * [ ] **(Green)** Create `UserRepository` and `StudentRepository` classes inheriting from `SqlAlchemyRepository`.
+  * [x] **(Red)** Create `tests/unit/test_base_repo.py`.
+  * [x] **(Green)** Create `src/repositories/base.py`: Define `AbstractRepository` (ABC) and `SqlAlchemyRepository` (Generic Implementation).
+  * [x] **(Green)** Create `UserRepository` and `StudentRepository` classes inheriting from `SqlAlchemyRepository`.
 
 #### **Dev 3: Parser Strategy**
 
 * **Scope:** `src/utils/parsers.py`
-  * [ ] **(Red)** Create `tests/unit/test_parsers.py`.
-  * [ ] **(Green)** Define `AbstractParser` (ABC) with method `parse(file_stream)`.
-  * [ ] **(Green)** Implement `UserCSVParser` and `GradeCSVParser` classes (Polymorphism).
+  * [x] **(Red)** Create `tests/unit/test_parsers.py`.
+  * [x] **(Green)** Define `AbstractParser` (ABC) with method `parse(file_stream)`.
+  * [x] **(Green)** Implement `UserCSVParser` and `GradeCSVParser` classes (Polymorphism).
 
 #### **Dev 4: Survey Domain Service**
 
 * **Scope:** `src/services/survey_service.py`
-  * [ ] **(Red)** Create `tests/unit/test_survey_service.py`. Mock `StudentRepository`.
-  * [ ] **(Green)** Implement `SurveyService` class.
+  * [x] **(Red)** Create `tests/unit/test_survey_service.py`. Mock `StudentRepository`.
+  * [x] **(Green)** Implement `SurveyService` class.
     * **DI:** `__init__(self, survey_repo, student_repo)`.
     * **Method:** `process_skip(student_id)`: Encapsulates the logic of calling `student.increment_misses()`.
 
@@ -117,8 +117,8 @@
 #### **Dev 6: View Objects (Templates)**
 
 * **Scope:** `src/templates/`
-  * [ ] **(Green)** Create Jinja2 templates (View layer).
-  * [ ] **(Green)** Ensure templates expect Objects (e.g., `{{ student.risk_score }}`) not Dictionaries.
+  * [x] **(Green)** Create Jinja2 templates (View layer).
+  * [x] **(Green)** Ensure templates expect Objects (e.g., `{{ student.risk_score }}`) not Dictionaries.
 
 **🌙 Nightly Refactor (Dev 1):**
 
@@ -134,9 +134,9 @@
 #### **Dev 1 : Dependency Injection Container**
 
 * **Scope:** `src/container.py`, `src/app.py`
-  * [ ] **(Red)** Create `tests/unit/test_container.py`.
-  * [ ] **(Green)** Implement a simple Container class or factory that instantiates Repos and injects them into Services.
-  * [ ] **(Green)** Register Blueprints.
+  * [x] **(Red)** Create `tests/unit/test_container.py`.
+  * [x] **(Green)** Implement a simple Container class or factory that instantiates Repos and injects them into Services.
+  * [x] **(Green)** Register Blueprints.
 
 #### **Dev 2: Import Orchestrator**
 
@@ -149,14 +149,14 @@
 #### **Dev 3: Admin Controller**
 
 * **Scope:** `src/api/admin.py`
-  * [ ] **(Red)** Create `tests/integration/test_admin_routes.py`.
-  * [ ] **(Green)** Implement Class-based Views (or standard Routes) that call `ImportService.execute_import()`.
+  * [x] **(Red)** Create `tests/integration/test_admin_routes.py`.
+  * [x] **(Green)** Implement Class-based Views (or standard Routes) that call `ImportService.execute_import()`.
 
 #### **Dev 4: Survey Controller**
 
 * **Scope:** `src/api/surveys.py`
-  * [ ] **(Red)** Create `tests/integration/test_survey_routes.py`.
-  * [ ] **(Green)** Implement Routes calling `SurveyService.submit()` and `SurveyService.process_skip()`.
+  * [x] **(Red)** Create `tests/integration/test_survey_routes.py`.
+  * [x] **(Green)** Implement Routes calling `SurveyService.submit()` and `SurveyService.process_skip()`.
 
 #### **Dev 5: Analytics Service (Composition)**
 
