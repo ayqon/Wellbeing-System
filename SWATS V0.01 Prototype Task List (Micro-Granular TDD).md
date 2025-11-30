@@ -44,7 +44,7 @@
 * **Auth Service**
   * [x] **(Red)** Create `tests/unit/test_auth_service.py`: Test login with valid/invalid credentials.
   * [x] **(Green)** Implement `src/services/auth_service.py`: `authenticate_user` returning JWT.
-  * [ ] **(Green)** Implement `src/api/auth.py`: `POST /login` endpoint.
+  * [x] **(Green)** Implement `src/api/auth.py`: `POST /login` endpoint.
 * **Utility: Password Reversal**
   * [ ] **(Red)** Create `tests/unit/test_utils.py`: Test `generate_default_password("alice")` returns `"ecila"`.
   * [ ] **(Green)** Implement `src/utils/security.py`: Password generation logic.
@@ -121,10 +121,10 @@
 ## **9. Final Verification**
 
 * **E2E Testing**
-  * [ ] **(Red)** Create `tests/e2e/test_full_flow.py`:
+  * [x] **(Red)** Create `tests/e2e/test_full_flow.py`:
       1. Officer Imports User `Alice`.
       2. Alice logins (`ecila`), Skips Survey.
       3. Officer Imports Grade (40%).
       4. Director checks view (Sees Hashed ID, Risk > 50).
       5. Officer checks view (Sees "Alice", Risk > 50).
-  * [ ] **(Green)** Run full suite `pytest`.
+  * [x] **(Green)** Run full suite `pytest`.

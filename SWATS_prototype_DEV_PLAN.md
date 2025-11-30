@@ -186,8 +186,8 @@
 #### **Dev 1 : E2E Tests**
 
 * **Scope:** `tests/e2e/`
-  * [ ] **(Red)** Create `TestFullLifecycle` class.
-  * [ ] **(Green)** Implement flow: Import $\to$ Login $\to$ Survey $\to$ Check Analytics.
+  * [x] **(Red)** Create `TestFullLifecycle` class.
+  * [x] **(Green)** Implement flow: Import $\to$ Login $\to$ Survey $\to$ Check Analytics.
 
 #### **Dev 2: Admin Service Extension (Hard Delete)**
 
