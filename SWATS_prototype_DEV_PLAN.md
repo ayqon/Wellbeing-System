@@ -149,8 +149,8 @@
 #### **Dev 3: Admin Controller**
 
 * **Scope:** `src/api/admin.py`
-  * [ ] **(Red)** Create `tests/integration/test_admin_routes.py`.
-  * [ ] **(Green)** Implement Class-based Views (or standard Routes) that call `ImportService.execute_import()`.
+  * [x] **(Red)** Create `tests/integration/test_admin_routes.py`.
+  * [x] **(Green)** Implement Class-based Views (or standard Routes) that call `ImportService.execute_import()`.
 
 #### **Dev 4: Survey Controller**
 
