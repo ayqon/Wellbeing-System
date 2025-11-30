@@ -2,8 +2,12 @@ import pytest
 from flask import Flask, render_template
 from unittest.mock import MagicMock
 
+import os
+
 def test_student_detail_template():
-    app = Flask(__name__, template_folder="../src/templates")
+    # Construct absolute path to templates directory
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../src/templates"))
+    app = Flask(__name__, template_folder=base_dir)
     
     # Create mock objects
     mock_user = MagicMock()
