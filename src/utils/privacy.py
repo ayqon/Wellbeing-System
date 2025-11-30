@@ -28,6 +28,7 @@ class Anonymizer:
                 "sleep": 8, # Placeholder
                 "misses": s.missed_surveys,
                 "grade": 100.0, # Placeholder
+                "attendance": 100, # Placeholder
                 # Pass through risk score if already calculated (e.g. for testing)
                 "current_risk_score": s.current_risk_score 
             }

@@ -154,7 +154,10 @@ class AnalyticsService:
             results.append({
                 "student_id": student.student_id,
                 "username": student.name,
-                "risk_score": risk_score
+                "risk_score": risk_score,
+                "stress": stress,
+                "sleep": sleep,
+                "misses": metrics.misses
             })
             
         return results

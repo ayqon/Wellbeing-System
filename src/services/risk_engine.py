@@ -78,6 +78,8 @@ class RiskCalculator:
                 "name": None,
                 "email": None,
                 "student_id": None,
+                "grade": s.get('grade'),
+                "attendance": s.get('attendance'),
                 # Legacy fields if needed by frontend/tests
                 "x": score,
                 "y": len(driver),

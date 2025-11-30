@@ -3,6 +3,7 @@ from src.container import Container
 
 def create_app(config_name="default"):
     app = Flask(__name__)
+    app.secret_key = 'dev_secret_key' # Change in production
     
     # Initialize Container
     container = Container()
@@ -19,6 +20,20 @@ def create_app(config_name="default"):
     
     from src.api.analytics import analytics_bp
     app.register_blueprint(analytics_bp, url_prefix='/analytics')
+    
+    from src.api.admin import admin_bp
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+    
+    # Initialize Flask-Login
+    from flask_login import LoginManager
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+    
+    @login_manager.user_loader
+    def load_user(user_id):
+        repo = container.user_repository()
+        return repo.get_by_id(user_id)
     
     @app.route("/health")
     def health():

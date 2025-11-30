@@ -111,7 +111,7 @@
 ## **8. UI & Frontend (Templates)**
 
 * **Basic Views**
-  * [ ] **(Green)** Create `templates/login.html`.
+  * [x] **(Green)** Create `templates/login.html`.
   * [x] **(Green)** Create `templates/student_survey.html` (Form + Skip Button).
   * [x] **(Green)** Create `templates/officer_dashboard.html` (Table with Risk Highlighting).
   * [x] **(Green)** Create `templates/director_dashboard.html` (Anonymized Table).
