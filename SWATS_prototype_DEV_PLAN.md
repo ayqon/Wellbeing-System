@@ -141,8 +141,8 @@
 #### **Dev 2: Import Orchestrator**
 
 * **Scope:** `src/services/import_service.py`
-  * [ ] **(Red)** Create `tests/integration/test_import_service.py`.
-  * [ ] **(Green)** Implement `ImportService` class.
+  * [x] **(Red)** Create `tests/integration/test_import_service.py`.
+  * [x] **(Green)** Implement `ImportService` class.
     * **DI:** Inject `UserCSVParser` (the strategy) and `UserRepository`.
     * **Method:** `execute_import(file)`.
 
@@ -169,8 +169,8 @@
 #### **Dev 6: Analytics Controller**
 
 * **Scope:** `src/api/analytics.py`
-  * [ ] **(Red)** Create `tests/integration/test_analytics_routes.py`.
-  * [ ] **(Green)** Implement Routes calling `AnalyticsService`.
+  * [x] **(Red)** Create `tests/integration/test_analytics_routes.py`.
+  * [x] **(Green)** Implement Routes calling `AnalyticsService`.
 
 **🌙 Nightly Refactor (Dev 1):**
 
