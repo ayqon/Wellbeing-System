@@ -26,3 +26,4 @@ def test_mask_identity_uniqueness():
     masked1 = anonymizer.mask_identity(user_id1)
     masked2 = anonymizer.mask_identity(user_id2)
     assert masked1 != masked2
+    
