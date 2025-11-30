@@ -204,8 +204,8 @@
 #### **Dev 4: Student Detail Aggregation**
 
 * **Scope:** `src/services/analytics_service.py` (Enhancement)
-  * [ ] **(Red)** Create `tests/unit/test_history_agg.py`.
-  * [ ] **(Green)** Add method `get_student_history(id)` to `AnalyticsService`. Returns a `StudentHistoryDTO` object (Data Transfer Object).
+  * [x] **(Red)** Create `tests/unit/test_history_agg.py`.
+  * [x] **(Green)** Add method `get_student_history(id)` to `AnalyticsService`. Returns a `StudentHistoryDTO` object (Data Transfer Object).
 
 #### **Dev 5: DTOs (Data Transfer Objects)**
 
