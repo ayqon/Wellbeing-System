@@ -1,15 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student Detail</title>
-</head>
-<body>
-    <h1>Student Detail: {{ student.user.name }}</h1>
-    <p>Email: {{ student.user.email }}</p>
-    <p>Student ID: {{ student.student_id }}</p>
-    <p>Course: {{ student.course_code }}</p>
-    <p>Risk Score: {{ student.current_risk_score }}</p>
-    <p>Consecutive Misses: {{ student.consecutive_misses }}</p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Student Detail{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('analytics.officer_dashboard') }}" class="btn btn-secondary mb-4">&larr; Back to Dashboard</a>
+    <h1>{{ student.name }}</h1>
+    <p style="color: var(--text-secondary);">{{ student.email }}</p>
+</div>
+
+<div class="flex gap-4 mb-4" style="flex-wrap: wrap;">
+    <div class="card" style="flex: 1; min-width: 250px;">
+        <h3>Risk Score</h3>
+        <div
+            style="font-size: 3rem; font-weight: 800; color: {% if student.current_risk_score >= 50 %}var(--danger-color){% elif student.current_risk_score >= 20 %}var(--warning-color){% else %}var(--success-color){% endif %};">
+            {{ "%.1f"|format(student.current_risk_score) }}
+        </div>
+        <p style="color: var(--text-secondary);">Current Risk Level</p>
+    </div>
+
+    <div class="card" style="flex: 1; min-width: 250px;">
+        <h3>Academic Info</h3>
+        <p><strong>Student ID:</strong> {{ student.student_id }}</p>
+        <p><strong>Course:</strong> {{ student.course_code }}</p>
+        <p><strong>Consecutive Misses:</strong> {{ student.consecutive_misses }}</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <h3>Wellbeing History (Trend)</h3>
+    <!-- Placeholder for history chart or table -->
+    <div class="table-container mt-4">
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Year</th>
+                    <th>Stress</th>
+                    <th>Sleep</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in history %}
+                <tr>
+                    <td>{{ record.week }}</td>
+                    <td>{{ record.year }}</td>
+                    <td>{{ record.stress }}</td>
+                    <td>{{ record.sleep }}</td>
+                    <td>{{ record.status }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No history available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="flex gap-4" style="flex-wrap: wrap;">
+    <div class="card" style="flex: 1;">
+        <h3>Attendance Trend</h3>
+        <p style="color: var(--text-secondary); font-style: italic;">Attendance history visualization coming soon.</p>
+    </div>
+    <div class="card" style="flex: 1;">
+        <h3>Grade History</h3>
+        <p style="color: var(--text-secondary); font-style: italic;">Grade history visualization coming soon.</p>
+    </div>
+</div>
+{% endblock %}

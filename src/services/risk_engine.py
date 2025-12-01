@@ -1,82 +1,5 @@
-<<<<<<< HEAD
-###OOP: Make weights constants/class attributes.
-###Method: compute(metrics: StudentMetricsDTO) -> float
-###OOP: Make weights constants
-class riskcalculator:
-
-    W_DISENGAGEMENT = 11
-    W_STRESS = 11
-    W_SLEEP = 1.3
-    W_GRADES = 1.0
-    W_ATTENDANCE = 0.5
-
-    def __init__(self):
-        pass
-
-
-    def calculate_risk(self, student):
-        # Placeholder implementation of risk calculation logic
-        stress_level = student.get('stress level', 0)
-        attendance = student.get('attendance', 100)
-        grades = student.get('grades', 100)
-        missed_surveys = student.get('missed_surveys', 0)
-        sleep_hours = student.get('sleep_hours', 8)
-        risk_score = 0
-        driver = "NONE"
-        # High Stress Scenario
-        if stress_level >= 4.0:
-            risk_score = stress_level * self.W_STRESS + attendance * self.W_ATTENDANCE # arbitrary weight
-            driver = "HIGH_STRESS"
-        # Consecutive Survey Misses Scenario
-        if missed_surveys >= 5:
-            risk_score = missed_surveys * self.W_DISENGAGEMENT  # arbitrary weight
-            driver = "DISENGAGEMENT"
-        # Silent Struggle Scenario
-        if stress_level >= 4.0 and grades >= 80 and sleep_hours <= 4:
-            risk_score = stress_level * self.W_STRESS + (100 - grades) * self.W_GRADES + (8 - sleep_hours) * self.W_SLEEP 
-            driver = "SILENT_STRUGGLE"
-        return risk_score, driver
-    
-    def compute(self, metrics):
-        """
-        Compute risk score from student metrics.
-        
-        Args:
-            metrics: StudentMetricsDTO containing student data
-            
-        Returns:
-            float: Risk score
-        """
-        driver = "NONE"
-        risk_score, driver = self.calculate_risk(metrics)
-        return risk_score, driver
-    
-        # ----------- Required by AnalyticsService -----------
-    def calculate(self, students):
-        """
-        Accepts a list of anonymized students and returns
-        correlation-style metric dicts (x,y,r) as required
-        by AnalyticsService + integration test.
-        """
-        results = []
-        for s in students:
-            score, driver = self.calculate_risk(s)
-
-            # For Director correlations view, return metrics
-            # (these don't have to use your risk weights — placeholder output)
-            results.append({
-                "x": score,      # any numeric mapping acceptable
-                "y": len(driver), 
-                "r": score / 100 if score else 0,
-                "name": None,
-                "email": None,
-                "student_id": None,
-            })
-        return results
-
-    
-=======
 from dataclasses import dataclass
+from typing import List, Dict, Any
 
 @dataclass
 class StudentMetricsDTO:
@@ -117,4 +40,49 @@ class RiskCalculator:
         total_risk = (stress_component + sleep_component + misses_component + grade_component) / 4
         
         return max(0.0, min(100.0, total_risk))
->>>>>>> 3a7964ac494425bc0b4b351b1539993b2dbe5c09
+
+    def calculate(self, students: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Accepts a list of anonymized students (dicts) and returns
+        metrics for the Director view.
+        
+        Adapts dictionary input to StudentMetricsDTO for calculation.
+        """
+        results = []
+        for s in students:
+            # Extract metrics from dict with defaults
+            metrics = StudentMetricsDTO(
+                stress=s.get('stress', 0) or 0,
+                sleep=s.get('sleep', 8) or 8,
+                misses=s.get('misses', 0) or 0,
+                grade=s.get('grade', 100.0) or 100.0
+            )
+            
+            # Use cached risk if available (e.g. from database) to support tests/legacy
+            if 'cached_risk' in s and s['cached_risk'] is not None and s['cached_risk'] > 0:
+                score = float(s['cached_risk'])
+            else:
+                score = self.compute(metrics)
+            
+            # Determine driver (simplified logic for compatibility)
+            driver = "NONE"
+            if metrics.stress >= 4:
+                driver = "HIGH_STRESS"
+            elif metrics.misses >= 5:
+                driver = "DISENGAGEMENT"
+
+            # For Director correlations view, return metrics
+            results.append({
+                "risk_score": score,      
+                "driver": driver, 
+                "name": None,
+                "email": None,
+                "student_id": None,
+                "grade": s.get('grade'),
+                "attendance": s.get('attendance'),
+                # Legacy fields if needed by frontend/tests
+                "x": score,
+                "y": len(driver),
+                "r": score / 100 if score else 0
+            })
+        return results

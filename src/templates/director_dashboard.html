@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Director Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1>Course Analytics: {{ course_id }}</h1>
+    <p style="color: var(--text-secondary);">Anonymized view of student wellbeing and risk factors.</p>
+</div>
+
+<div class="card table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Anonymized ID</th>
+                <th>Risk Score</th>
+                <th>Average Grade</th>
+                <th>Attendance %</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td style="font-family: monospace; color: var(--text-secondary);">{{ student.student_id or 'HIDDEN' }}
+                </td> <!-- Hashed or Hidden -->
+                <td>
+                    {% if student.risk_score >= 50 %}
+                    <span class="badge badge-danger">{{ "%.1f"|format(student.risk_score) }}</span>
+                    {% elif student.risk_score >= 20 %}
+                    <span class="badge badge-warning">{{ "%.1f"|format(student.risk_score) }}</span>
+                    {% else %}
+                    <span class="badge badge-success">{{ "%.1f"|format(student.risk_score) }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ student.grade if student.grade is defined else 'N/A' }}%</td>
+                <td>{{ student.attendance if student.attendance is defined else 'N/A' }}%</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No data available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

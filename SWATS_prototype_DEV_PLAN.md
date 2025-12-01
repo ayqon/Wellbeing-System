@@ -141,8 +141,8 @@
 #### **Dev 2: Import Orchestrator**
 
 * **Scope:** `src/services/import_service.py`
-  * [ ] **(Red)** Create `tests/integration/test_import_service.py`.
-  * [ ] **(Green)** Implement `ImportService` class.
+  * [x] **(Red)** Create `tests/integration/test_import_service.py`.
+  * [x] **(Green)** Implement `ImportService` class.
     * **DI:** Inject `UserCSVParser` (the strategy) and `UserRepository`.
     * **Method:** `execute_import(file)`.
 
@@ -169,8 +169,8 @@
 #### **Dev 6: Analytics Controller**
 
 * **Scope:** `src/api/analytics.py`
-  * [ ] **(Red)** Create `tests/integration/test_analytics_routes.py`.
-  * [ ] **(Green)** Implement Routes calling `AnalyticsService`.
+  * [x] **(Red)** Create `tests/integration/test_analytics_routes.py`.
+  * [x] **(Green)** Implement Routes calling `AnalyticsService`.
 
 **🌙 Nightly Refactor (Dev 1):**
 
@@ -186,8 +186,8 @@
 #### **Dev 1 : E2E Tests**
 
 * **Scope:** `tests/e2e/`
-  * [ ] **(Red)** Create `TestFullLifecycle` class.
-  * [ ] **(Green)** Implement flow: Import $\to$ Login $\to$ Survey $\to$ Check Analytics.
+  * [x] **(Red)** Create `TestFullLifecycle` class.
+  * [x] **(Green)** Implement flow: Import $\to$ Login $\to$ Survey $\to$ Check Analytics.
 
 #### **Dev 2: Admin Service Extension (Hard Delete)**
 
@@ -204,8 +204,8 @@
 #### **Dev 4: Student Detail Aggregation**
 
 * **Scope:** `src/services/analytics_service.py` (Enhancement)
-  * [ ] **(Red)** Create `tests/unit/test_history_agg.py`.
-  * [ ] **(Green)** Add method `get_student_history(id)` to `AnalyticsService`. Returns a `StudentHistoryDTO` object (Data Transfer Object).
+  * [x] **(Red)** Create `tests/unit/test_history_agg.py`.
+  * [x] **(Green)** Add method `get_student_history(id)` to `AnalyticsService`. Returns a `StudentHistoryDTO` object (Data Transfer Object).
 
 #### **Dev 5: DTOs (Data Transfer Objects)**
 

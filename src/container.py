@@ -28,17 +28,17 @@ class Container:
 
     def user_repository(self) -> UserRepository:
         if not self._user_repo:
-            self._user_repo = UserRepository(self.db.SessionLocal)
+            self._user_repo = UserRepository(self.db.SessionLocal())
         return self._user_repo
 
     def student_repository(self) -> StudentRepository:
         if not self._student_repo:
-            self._student_repo = StudentRepository(self.db.SessionLocal)
+            self._student_repo = StudentRepository(self.db.SessionLocal())
         return self._student_repo
 
     def survey_repository(self) -> SurveyRepository:
         if not self._survey_repo:
-            self._survey_repo = SurveyRepository(self.db.SessionLocal)
+            self._survey_repo = SurveyRepository(self.db.SessionLocal())
         return self._survey_repo
 
     def auth_service(self) -> AuthService:
@@ -58,3 +58,16 @@ class Container:
         if not self._risk_calculator:
             self._risk_calculator = RiskCalculator()
         return self._risk_calculator
+
+    def analytics_service(self):
+        from src.services.analytics_service import AnalyticsService
+        from src.utils.privacy import Anonymizer
+        
+        if not hasattr(self, '_analytics_service') or not self._analytics_service:
+            self._analytics_service = AnalyticsService(
+                self.risk_calculator(),
+                Anonymizer(),
+                self.student_repository(),
+                self.survey_repository()
+            )
+        return self._analytics_service

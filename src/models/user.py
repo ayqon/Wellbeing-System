@@ -9,6 +9,8 @@ class User(BaseModel, TimestampMixin, SoftDeleteMixin):
     username = Column(String(50), unique=True, nullable=False)
     password_hash = Column(String(128), nullable=False)
     role = Column(String(20), nullable=False)
+    first_name = Column(String(50), nullable=True)
+    last_name = Column(String(50), nullable=True)
 
     def set_password(self, password):
         self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

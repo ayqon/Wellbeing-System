@@ -44,7 +44,7 @@
 * **Auth Service**
   * [x] **(Red)** Create `tests/unit/test_auth_service.py`: Test login with valid/invalid credentials.
   * [x] **(Green)** Implement `src/services/auth_service.py`: `authenticate_user` returning JWT.
-  * [ ] **(Green)** Implement `src/api/auth.py`: `POST /login` endpoint.
+  * [x] **(Green)** Implement `src/api/auth.py`: `POST /login` endpoint.
 * **Utility: Password Reversal**
   * [ ] **(Red)** Create `tests/unit/test_utils.py`: Test `generate_default_password("alice")` returns `"ecila"`.
   * [ ] **(Green)** Implement `src/utils/security.py`: Password generation logic.
@@ -52,13 +52,13 @@
 ## **4. Data Ingestion (Officer Features)**
 
 * **User Import (CSV)**
-  * [ ] **(Red)** Create `tests/integration/test_import_users.py`: Upload CSV $\rightarrow$ Assert Users & Students created.
-  * [ ] **(Green)** Implement `src/services/import_service.py`: `process_user_csv` (Parsing & DB Insert).
-  * [ ] **(Green)** Implement `src/api/admin.py`: `POST /import/users` endpoint.
+  * [x] **(Red)** Create `tests/integration/test_import_users.py`: Upload CSV $\rightarrow$ Assert Users & Students created.
+  * [x] **(Green)** Implement `src/services/import_service.py`: `process_user_csv` (Parsing & DB Insert).
+  * [x] **(Green)** Implement `src/api/admin.py`: `POST /import/users` endpoint.
 * **Academic Data Import**
-  * [ ] **(Red)** Create `tests/integration/test_import_academic.py`: Upload Grades CSV $\rightarrow$ Assert `ModuleGrade` updated.
-  * [ ] **(Green)** Implement `src/services/import_service.py`: `process_academic_csv` (Grades/Attendance).
-  * [ ] **(Green)** Implement `src/api/admin.py`: `POST /import/academic` endpoint.
+  * [x] **(Red)** Create `tests/integration/test_import_academic.py`: Upload Grades CSV $\rightarrow$ Assert `ModuleGrade` updated.
+  * [x] **(Green)** Implement `src/services/import_service.py`: `process_academic_csv` (Grades/Attendance).
+  * [x] **(Green)** Implement `src/api/admin.py`: `POST /import/academic` endpoint.
 * **Hard Delete (GDPR)**
   * [ ] **(Red)** Create `tests/system/test_cascade_delete.py`: Create User+Data $\rightarrow$ Delete User $\rightarrow$ Assert all data gone.
   * [ ] **(Green)** Implement `src/services/admin_service.py`: `hard_delete_user` (Ensure Cascade configuration in Models).
@@ -91,27 +91,27 @@
   * [ ] **(Red)** Create `tests/unit/test_privacy.py`: Test `hash_id("123")` returns consistent hash, distinct from input.
   * [ ] **(Green)** Implement `src/utils/privacy.py`: SHA-256 or similar hashing wrapper.
 * **Director View (Anonymized)**
-  * [ ] **(Red)** Create `tests/integration/test_director_view.py`:
+  * [x] **(Red)** Create `tests/integration/test_director_view.py`:
     * Authenticate as Director.
     * Assert response list has `hashed_id`.
     * Assert `name`/`email` are `None`.
-  * [ ] **(Green)** Implement `src/services/analytics_service.py`: `get_director_data` (Filter by Course + Apply Hash).
-    * [ ] **(Green)** Implement `src/api/analytics.py`: `GET /director`.
+  * [x] **(Green)** Implement `src/services/analytics_service.py`: `get_director_data` (Filter by Course + Apply Hash).
+    * [x] **(Green)** Implement `src/api/analytics.py`: `GET /director`.
 * **Officer View (Unanonymized)**
-  * [ ] **(Red)** Create `tests/integration/test_officer_view.py`:
+  * [x] **(Red)** Create `tests/integration/test_officer_view.py`:
     * Authenticate as Officer.
     * Assert response list has real `first_name`, `last_name`.
-  * [ ] **(Green)** Implement `src/services/analytics_service.py`: `get_officer_snapshot`.
-  * [ ] **(Green)** Implement `src/api/analytics.py`: `GET /officer/snapshot`.
+  * [x] **(Green)** Implement `src/services/analytics_service.py`: `get_officer_snapshot`.
+  * [x] **(Green)** Implement `src/api/analytics.py`: `GET /officer/snapshot`.
 * **Officer Diagnostic (Trends)**
-  * [ ] **(Red)** Add test: `get_student_history` returns chronological Stress/Sleep lists.
-  * [ ] **(Green)** Implement `src/services/analytics_service.py`: `get_student_detail`.
-  * [ ] **(Green)** Implement `src/api/analytics.py`: `GET /officer/student/<id>`.
+  * [x] **(Red)** Add test: `get_student_history` returns chronological Stress/Sleep lists.
+  * [x] **(Green)** Implement `src/services/analytics_service.py`: `get_student_detail`.
+  * [x] **(Green)** Implement `src/api/analytics.py`: `GET /officer/student/<id>`.
 
 ## **8. UI & Frontend (Templates)**
 
 * **Basic Views**
-  * [ ] **(Green)** Create `templates/login.html`.
+  * [x] **(Green)** Create `templates/login.html`.
   * [x] **(Green)** Create `templates/student_survey.html` (Form + Skip Button).
   * [x] **(Green)** Create `templates/officer_dashboard.html` (Table with Risk Highlighting).
   * [x] **(Green)** Create `templates/director_dashboard.html` (Anonymized Table).
@@ -121,10 +121,10 @@
 ## **9. Final Verification**
 
 * **E2E Testing**
-  * [ ] **(Red)** Create `tests/e2e/test_full_flow.py`:
+  * [x] **(Red)** Create `tests/e2e/test_full_flow.py`:
       1. Officer Imports User `Alice`.
       2. Alice logins (`ecila`), Skips Survey.
       3. Officer Imports Grade (40%).
       4. Director checks view (Sees Hashed ID, Risk > 50).
       5. Officer checks view (Sees "Alice", Risk > 50).
-  * [ ] **(Green)** Run full suite `pytest`.
+  * [x] **(Green)** Run full suite `pytest`.

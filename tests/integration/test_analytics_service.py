@@ -2,42 +2,58 @@ import pytest
 from src.services.analytics_service import AnalyticsService
 
 
-class FakeRiskCalculator:
-    def calculate(self, students):
-        return [{"x": 70, "y": 50, "r": 0.82}]  # dummy correlation output
-
-
-class FakeAnonymizer:
-    def anonymize(self, students):
-        # Proper anonymization removes sensitive fields
-        return [
-            {
-                "grades": s["score"],
-                "attendance": s["attendance"],
-                "student_id": None,  # enforced null here
-                "name": None,
-                "email": None,
-            }
-            for s in students
-        ]
-
+class FakeStudent:
+    def __init__(self, student_id, name, email, current_risk_score, missed_surveys=0):
+        self.student_id = student_id
+        self.name = name
+        self.email = email
+        self.current_risk_score = current_risk_score
+        self.missed_surveys = missed_surveys
 
 class FakeStudentRepository:
-    def fetch_all(self):
+    def fetch_by_course(self, course_id):
         return [
-            {
-                "student_id": "S123",
-                "name": "Alice",
-                "email": "alice@Warwick.ac.uk",
-                "grades": 78,
-                "attendance": 0.8,
-            }
+            FakeStudent("S123", "Alice", "alice@Warwick.ac.uk", 78)
         ]
-
 
 @pytest.mark.integration
 def test_director_privacy_enforcement():
     repo = FakeStudentRepository()
+    # Use real Anonymizer and RiskCalculator or update fakes to match real signatures?
+    # The test checks privacy enforcement in the SERVICE.
+    # The service calls anonymizer.anonymize.
+    # If we use FakeAnonymizer, we test the service's use of it.
+    # But real Anonymizer expects objects.
+    # Let's use real Anonymizer and RiskCalculator to be safe, or update fakes.
+    # Updating fakes is better for unit testing.
+    
+    class FakeAnonymizer:
+        def anonymize(self, students):
+            return [
+                {
+                    "student_id": "masked_id",
+                    "name": None,
+                    "email": None,
+                    "stress": 0,
+                    "sleep": 8,
+                    "misses": 0,
+                    "grade": 100.0,
+                    "cached_risk": s.current_risk_score
+                }
+                for s in students
+            ]
+
+    class FakeRiskCalculator:
+        def calculate(self, students):
+            return [{
+                "risk_score": 78,
+                "driver": "NONE",
+                "name": None,
+                "email": None,
+                "student_id": None,
+                "x": 78, "y": 4, "r": 0.78
+            }]
+
     anonymizer = FakeAnonymizer()
     rc = FakeRiskCalculator()
 
@@ -49,7 +65,7 @@ def test_director_privacy_enforcement():
 
     # --- CALL WITH EXCEPTION HANDLING ---
     try:
-        result = svc.get_correlations_for_director()
+        result = svc.get_director_view("CS101")
     except Exception as e:
         pytest.fail(f"AnalyticsService raised an unexpected exception: {e}")
 
@@ -63,6 +79,5 @@ def test_director_privacy_enforcement():
     assert "student_id" not in result[0] or result[0]["student_id"] is None
 
     # --- METRIC ASSERTIONS ---
-    assert "x" in result[0], "Metric 'x' missing"
-    assert "y" in result[0], "Metric 'y' missing"
-    assert "r" in result[0], "Metric 'r' missing"
+    assert "risk_score" in result[0]
+    assert result[0]["risk_score"] == 78

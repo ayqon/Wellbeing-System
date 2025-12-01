@@ -17,18 +17,24 @@ class AbstractParser(ABC):
         pass
 
 class UserCSVParser(AbstractParser):
-    def parse(self, file_stream) -> List[User]:
+    def parse(self, file_stream) -> List[dict]:
         reader = csv.DictReader(file_stream)
+        
+        # Validate headers
+        required_fields = {'username', 'password_hash', 'student_id', 'name', 'email'}
+        if not reader.fieldnames or not required_fields.issubset(set(reader.fieldnames)):
+            raise ValueError(f"Missing required columns. Expected: {required_fields}")
+            
         users = []
         for row in reader:
-            # Handle potential missing keys gracefully or let it error if strict
-            # Assuming strict CSV structure matching the model needs
-            users.append(User(
-                username=row['username'],
-                # email=row['email'], # User model doesn't have email
-                password_hash=row['password_hash'],
-                role=row.get('role', 'student') # Default to student if not present
-            ))
+            users.append({
+                'username': row['username'],
+                'password_hash': row['password_hash'],
+                'role': row.get('role', 'student'),
+                'student_id': row['student_id'],
+                'name': row['name'],
+                'email': row['email']
+            })
         return users
 
 class GradeCSVParser(AbstractParser):

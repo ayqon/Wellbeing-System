@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Officer Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1>Student Risk Overview</h1>
+    <div class="flex gap-4">
+        <a href="{{ url_for('admin.import_users') }}" class="btn btn-secondary">Import Users</a>
+        <a href="{{ url_for('admin.import_academic') }}" class="btn btn-secondary">Import Grades</a>
+    </div>
+</div>
+
+<div class="card table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Risk Score</th>
+                <th>Stress</th>
+                <th>Sleep</th>
+                <th>Misses</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.username }}</td>
+                <td>{{ student.student_id }}</td>
+                <td>
+                    {% if student.risk_score >= 50 %}
+                    <span class="badge badge-danger">{{ "%.1f"|format(student.risk_score) }}</span>
+                    {% elif student.risk_score >= 20 %}
+                    <span class="badge badge-warning">{{ "%.1f"|format(student.risk_score) }}</span>
+                    {% else %}
+                    <span class="badge badge-success">{{ "%.1f"|format(student.risk_score) }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ student.stress }}</td>
+                <td>{{ student.sleep }}h</td>
+                <td>{{ student.misses }}</td>
+                <td>
+                    {% if student.risk_score >= 50 %}
+                    High Risk
+                    {% elif student.risk_score >= 20 %}
+                    Moderate
+                    {% else %}
+                    Stable
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('analytics.get_student_detail', student_id=student.student_id) }}"
+                        class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">View Details</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">No students found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

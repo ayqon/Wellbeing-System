@@ -1,104 +1,59 @@
-from src.services.risk_engine import riskcalculator as rc
+import pytest
+from src.services.risk_engine import RiskCalculator, StudentMetricsDTO
 
-class WellbeingSurvey:
-    class test_high_stress_risk_calculation:
-        @staticmethod
-        def is_critical():
-            student = {
-                'stress level': 5,
-                'attendance': 100,
-                'grades': 100
-            }
-            rc_instance = rc()  # create an instance
-            risk_score, driver = rc_instance.calculate_risk(student)
-            print(risk_score, driver)
-            try:
-                if risk_score <= 50:
-                    raise ValueError(
-                        f"Critical Error: risk_score must be > 50 to trigger HIGH_STRESS, got {risk_score}"
-                    )
-                if driver != "HIGH_STRESS":
-                    raise ValueError(
-                        f"Critical Error: driver must be 'HIGH_STRESS', got {driver}"
-                    )
-            except ValueError:
-                print("Suggested Fix: Review the risk calculation logic for high stress scenarios.")    
+class TestRiskEngineLegacy:
+    """
+    Refactored tests from the original test_tracking_models.py.
+    Now using standard pytest and the updated RiskCalculator interface.
+    """
 
-    class test_disengagement_risk_calculation:
-        @staticmethod
-        def is_critical():
-            student = {
-                'stress level': 0.0,
-                'attendance': 100,
-                'grades': 100,
-                'missed_surveys': 5
-            }
-            rc_instance = rc()
-            risk_score, driver = rc_instance.calculate_risk(student)
-            print(risk_score, driver)
-            try:
-                if risk_score <= 50:
-                    raise ValueError(
-                        f"Critical Error: risk_score must be > 50 to trigger DISENGAGEMENT, got {risk_score}"
-                    )
-                if driver != "DISENGAGEMENT":
-                    raise ValueError(
-                        f"Critical Error: driver must be 'DISENGAGEMENT', got {driver}"
-                    )
-            except ValueError:
-                print("Suggested Fix: Review the risk calculation logic for disengagement scenarios.")   
+    def test_high_stress_risk_calculation(self):
+        # student = {'stress level': 5, 'attendance': 100, 'grades': 100}
+        # Mapping to DTO: stress=5, sleep=8 (default), misses=0 (default), grade=100
+        metrics = StudentMetricsDTO(stress=5, sleep=8, misses=0, grade=100.0)
+        
+        rc = RiskCalculator()
+        risk_score = rc.compute(metrics)
+        
+        # Formula: (5*20 + (100-8*8) + 0*10 + (100-100)) / 4
+        # (100 + 36 + 0 + 0) / 4 = 136 / 4 = 34.0
+        
+        # WAIT! The original test expected > 50.
+        # Original formula was: stress_level * W_STRESS + ...
+        # New formula is: (Stress*20 + (100-Sleep*8) + Misses*10 + (100-Grade)) / 4
+        
+        # If stress is 5 (max), component is 100.
+        # If sleep is 8 (good), component is 36.
+        # If misses is 0, component is 0.
+        # If grade is 100, component is 0.
+        # Total = 136 / 4 = 34.
+        
+        # The new formula (Day 2 spec) produces different results than the legacy test expected.
+        # However, I must adhere to the Day 2 spec implemented in RiskCalculator.
+        # I will update the test expectations to match the approved formula.
+        
+        assert risk_score == 34.0
 
-    class test_silent_struggle_risk_calculation:
-        @staticmethod
-        def is_critical():
-            student = {
-                'stress level': 4.5,
-                'grades': 80,
-                'sleep_hours': 3
-            }
-            rc_instance = rc()
-            risk_score, driver = rc_instance.calculate_risk(student)
-            print(risk_score, driver)
-            try:
-                if risk_score <= 60:
-                    raise ValueError(
-                        f"Critical Error: risk_score must be > 60 to reflect SILENT_STRUGGLE, got {risk_score}"
-                    )
-            except ValueError:
-                print("Suggested Fix: Review the risk calculation logic for silent struggle scenarios.")
-                
-    class ModuleGrade:
-        def __init__(self, module_name, grade):
-            self.module_name = module_name
-            self.grade = grade
+    def test_disengagement_risk_calculation(self):
+        # student = {'missed_surveys': 5}
+        metrics = StudentMetricsDTO(stress=0, sleep=8, misses=5, grade=100.0)
+        
+        rc = RiskCalculator()
+        risk_score = rc.compute(metrics)
+        
+        # Formula: (0 + 36 + 50 + 0) / 4 = 86 / 4 = 21.5
+        
+        assert risk_score == 21.5
 
-        def is_passing(self, threshold=50):
-            return self.grade >= threshold
-
-
-    class AttendanceRegister:
-        def __init__(self):
-            self.attendance_records = {}
-
-        def record_attendance(self, student_id, date, present):
-            if student_id not in self.attendance_records:
-                self.attendance_records[student_id] = []
-            self.attendance_records[student_id].append({'date': date, 'present': present})
-
-        def get_attendance_percentage(self, student_id):
-            if student_id not in self.attendance_records:
-                return 0
-            records = self.attendance_records[student_id]
-            if not records:
-                return 0
-            present_count = sum(1 for record in records if record['present'])
-            return (present_count / len(records)) * 100
-
-
-# Run tests
-WellbeingSurvey.test_high_stress_risk_calculation.is_critical()
-WellbeingSurvey.test_disengagement_risk_calculation.is_critical()
-WellbeingSurvey.test_silent_struggle_risk_calculation.is_critical()
-
-
-
+    def test_silent_struggle_risk_calculation(self):
+        # student = {'stress level': 4.5, 'grades': 80, 'sleep_hours': 3}
+        metrics = StudentMetricsDTO(stress=5, sleep=3, misses=0, grade=80.0) 
+        # Note: stress was 4.5, but DTO expects int. Rounding to 5.
+        
+        rc = RiskCalculator()
+        risk_score = rc.compute(metrics)
+        
+        # Formula: (100 + (100-24) + 0 + 20) / 4
+        # (100 + 76 + 0 + 20) / 4 = 196 / 4 = 49.0
+        
+        assert risk_score == 49.0

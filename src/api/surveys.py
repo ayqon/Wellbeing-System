@@ -1,7 +1,15 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, render_template
 from src.models.survey import WellbeingSurvey, SurveyStatus
 
 survey_bp = Blueprint('surveys', __name__)
+
+
+@survey_bp.route('/dashboard', methods=['GET'])
+def student_dashboard():
+    # In a real app, we'd fetch the current week/year from a service or config
+    week = 5
+    year = 2025
+    return render_template('student_survey.html', week=week, year=year)
 
 
 @survey_bp.route('/submit', methods=['POST'])

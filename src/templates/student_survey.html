@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Wellbeing Survey{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h1 class="mb-4">Weekly Check-in</h1>
+    <p class="mb-4" style="color: var(--text-secondary);">Please rate your wellbeing for Week {{ week }} of {{ year }}.
+    </p>
+
+    <form action="{{ url_for('surveys.submit_survey') }}" method="POST">
+        <input type="hidden" name="student_id" value="{{ current_user.id }}"> <!-- Ideally fetched from session/user -->
+        <input type="hidden" name="week" value="{{ week }}">
+        <input type="hidden" name="year" value="{{ year }}">
+
+        <div class="form-group">
+            <label for="stress">Stress Level (1-5)</label>
+            <div
+                style="display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.5rem;">
+                <span>Low Stress</span>
+                <span>High Stress</span>
+            </div>
+            <input type="range" id="stress" name="stress" min="1" max="5" step="1" value="3"
+                oninput="this.nextElementSibling.value = this.value">
+            <output style="display: block; text-align: center; font-weight: bold; margin-top: 0.5rem;">3</output>
+        </div>
+
+        <div class="form-group">
+            <label for="sleep">Average Sleep (Hours)</label>
+            <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" required placeholder="e.g. 7.5">
+        </div>
+
+        <div class="flex gap-4 mt-4">
+            <button type="submit" style="flex: 2;">Submit Check-in</button>
+            <button type="submit" formaction="{{ url_for('surveys.skip_survey') }}" class="btn-secondary"
+                style="flex: 1;">Skip</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
