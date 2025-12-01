@@ -66,7 +66,7 @@ def test_hard_delete_cascade(db_session):
     # If the requirement is "Hard Delete User -> All data gone", and Student is separate, 
     # maybe we are deleting the Student? 
     # But the prompt says "hard_delete_user(user_id)".
-    #
+    
     # Let's try to delete the user.
     success = admin_service.hard_delete_user(user.id)
     assert success is True
