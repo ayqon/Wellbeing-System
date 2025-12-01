@@ -198,8 +198,8 @@
 #### **Dev 3: Validation Decorators**
 
 * **Scope:** `src/api/validation.py`
-  * [ ] **(Red)** Create `tests/unit/test_validators.py`.
-  * [ ] **(Green)** Implement `Validator` class with static methods or Decorators for input validation.
+  * [x] **(Red)** Create `tests/unit/test_validators.py`.
+  * [x] **(Green)** Implement `Validator` class with static methods or Decorators for input validation.
 
 #### **Dev 4: Student Detail Aggregation**
 
