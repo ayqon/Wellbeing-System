@@ -8,3 +8,4 @@ pytest
 pytest-cov
 black
 flake8
+flask-login
