@@ -210,8 +210,8 @@
 #### **Dev 5: DTOs (Data Transfer Objects)**
 
 * **Scope:** `src/dtos/`
-  * [ ] **(Green)** Define `StudentMetricsDTO`, `RiskReportDTO`.
-  * [ ] **(Refactor)** Update Services to return DTOs instead of raw Dictionaries (Type Safety).
+  * [x] **(Green)** Define `StudentMetricsDTO`, `RiskReportDTO`.
+  * [x] **(Refactor)** Update Services to return DTOs instead of raw Dictionaries (Type Safety).
 
 #### **Dev 6: UI Integration**
 

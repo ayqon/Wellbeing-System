@@ -12,7 +12,7 @@ class FakeAnonymizer:
         # Proper anonymization removes sensitive fields
         return [
             {
-                "score": s["score"],
+                "grades": s["score"],
                 "attendance": s["attendance"],
                 "student_id": None,  # enforced null here
                 "name": None,
@@ -29,7 +29,7 @@ class FakeStudentRepository:
                 "student_id": "S123",
                 "name": "Alice",
                 "email": "alice@Warwick.ac.uk",
-                "score": 78,
+                "grades": 78,
                 "attendance": 0.8,
             }
         ]
