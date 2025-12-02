@@ -57,3 +57,10 @@ class TestApp:
         
         assert user == mock_user
         app.container.user_repository.return_value.get.assert_called_with("123")
+
+    def test_index_redirect(self, client):
+        """Test that index redirects to login"""
+        response = client.get('/', follow_redirects=False)
+        assert response.status_code == 302
+        assert '/auth/login' in response.location
+

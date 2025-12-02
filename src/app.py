@@ -36,6 +36,11 @@ def create_app(config_name="default"):
         repo = current_app.container.user_repository()
         return repo.get(user_id)
     
+    @app.route("/")
+    def index():
+        from flask import redirect, url_for
+        return redirect(url_for('auth.login'))
+    
     @app.route("/health")
     def health():
         return {"status": "ok"}

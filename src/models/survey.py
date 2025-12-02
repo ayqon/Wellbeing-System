@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Boolean
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Enum, Boolean
 from sqlalchemy.orm import relationship, backref
 from src.models.base import BaseModel, TimestampMixin
 import enum
@@ -20,7 +20,7 @@ class WellbeingSurvey(BaseModel, TimestampMixin):
     year = Column(Integer, nullable=False)
     status = Column(Enum(SurveyStatus), default=SurveyStatus.PENDING)
     stress = Column(Integer, nullable=True)
-    sleep = Column(Integer, nullable=True)
+    sleep = Column(Float, nullable=True)
     is_critical = Column(Boolean, nullable=False)
 
     student = relationship("Student", backref=backref("surveys", cascade="all, delete-orphan"))

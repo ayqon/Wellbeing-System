@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1>Welcome, {{ current_user.id }}</h1>
+    <p style="color: var(--text-secondary);">Manage your wellbeing and track your progress.</p>
+</div>
+
+<div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <!-- Current Status Card -->
+    <div class="card">
+        <h2 class="h4 mb-3">Current Status</h2>
+        <p>Your wellbeing status is currently being tracked.</p>
+        <div class="mt-4">
+            <p class="text-secondary">Next survey due: <strong>Week 1</strong></p>
+        </div>
+    </div>
+
+    <!-- Actions Card -->
+    <div class="card">
+        <h2 class="h4 mb-3">Quick Actions</h2>
+        <p class="mb-4">Complete your weekly wellbeing check-in.</p>
+        <!-- Placeholder link, as we need a GET route for the survey form -->
+        <a href="{{ url_for('surveys.get_survey_form') }}" class="btn">Start Survey</a>
+    </div>
+</div>
+{% endblock %}

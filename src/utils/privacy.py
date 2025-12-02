@@ -33,8 +33,8 @@ class Anonymizer:
                 "stress": 0, # Placeholder, should come from surveys
                 "sleep": 8, # Placeholder
                 "misses": s.missed_surveys,
-                "grade": 100.0, # Placeholder
-                "attendance": 100, # Placeholder
+                "grade": getattr(s, '_temp_grade', 0.0), 
+                "attendance": getattr(s, '_temp_attendance', 0),
                 # Pass through risk score if already calculated (e.g. for testing)
                 "cached_risk": s.current_risk_score 
             }

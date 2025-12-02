@@ -2,7 +2,9 @@ from sqlalchemy import Column, String, Integer
 from src.models.base import BaseModel, TimestampMixin, SoftDeleteMixin
 import bcrypt
 
-class User(BaseModel, TimestampMixin, SoftDeleteMixin):
+from flask_login import UserMixin
+
+class User(BaseModel, TimestampMixin, SoftDeleteMixin, UserMixin):
     """
     User entity representing a system user (Student, Officer, or Director).
     """

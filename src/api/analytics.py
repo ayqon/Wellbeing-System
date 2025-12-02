@@ -31,12 +31,42 @@ def director_dashboard():
     """
     Renders the Director Dashboard with anonymized student data.
     """
+    from flask_login import login_required, current_user
+    from src.models.academic import Course
+    
+    # Ensure user is logged in
+    if not current_user.is_authenticated:
+         return render_template('director_dashboard.html', students=[], course_id="Unknown", error="Please log in.")
+
+    if current_user.role != 'DIRECTOR':
+        return render_template('director_dashboard.html', students=[], course_id="Unauthorized", error="Access denied.")
+
     service = current_app.container.analytics_service()
+    session = current_app.container.db.SessionLocal()
+    
+    view_mode = request.args.get('view', 'risk') # Default to risk view
+    course_code = "Unknown"
+    
     try:
-        students = service.get_director_view("CS101")
-        return render_template('director_dashboard.html', students=students, course_id="CS101")
+        # Find director's course
+        course = session.query(Course).filter_by(director_user_id=current_user.id).first()
+        
+        if not course:
+            return render_template('director_dashboard.html', students=[], course_id="None", view_mode=view_mode, error="No course assigned.")
+            
+        course_code = course.course_code
+        
+        if view_mode == 'academic':
+            students = service.get_director_academic_view(course_code)
+        else:
+            students = service.get_director_risk_view(course_code)
+            
+        return render_template('director_dashboard.html', students=students, course_id=course_code, view_mode=view_mode)
+        
     except Exception as e:
-        return render_template('director_dashboard.html', students=[], course_id="CS101", error=str(e))
+        return render_template('director_dashboard.html', students=[], course_id=course_code, view_mode=view_mode, error=str(e))
+    finally:
+        session.close()
 
 @analytics_bp.route('/student/<student_id>/detail', methods=['GET'])
 def get_student_detail(student_id):
@@ -63,7 +93,7 @@ def get_correlations():
     """
     service = current_app.container.analytics_service()
     try:
-        data = service.get_director_view("CS101")
+        data = service.get_director_risk_view("CS101")
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

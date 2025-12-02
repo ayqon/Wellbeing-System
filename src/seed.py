@@ -163,14 +163,21 @@ def seed_db():
                         student.increment_misses()
                     else:
                         stress = 2 # Default Healthy
-                        sleep = 7
+                        # Generate quarter-hour sleep values
+                        sleep_hours = random.randint(7, 8)
+                        sleep_quarters = random.choice([0.0, 0.25, 0.5, 0.75])
+                        sleep = sleep_hours + sleep_quarters
                         
                         if profile == "C": # Silent Struggle
                             stress = random.randint(4, 5) # High Stress
-                            sleep = random.randint(4, 6)
+                            sleep_hours = random.randint(4, 6)
+                            sleep_quarters = random.choice([0.0, 0.25, 0.5, 0.75])
+                            sleep = sleep_hours + sleep_quarters
                         elif profile == "D": # Critical
                             stress = 5 # Max Stress
-                            sleep = random.randint(3, 5)
+                            sleep_hours = random.randint(3, 5)
+                            sleep_quarters = random.choice([0.0, 0.25, 0.5, 0.75])
+                            sleep = sleep_hours + sleep_quarters
                         elif profile == "B": # Disengaged
                             stress = random.randint(1, 3) 
                         

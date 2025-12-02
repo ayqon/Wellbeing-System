@@ -15,7 +15,7 @@ class TestAnalyticsAPI:
         from jinja2 import DictLoader
         app.jinja_env.loader = DictLoader({
             'officer_dashboard.html': 'officer_dashboard',
-            'director_dashboard.html': 'director_dashboard',
+            'director_dashboard.html': 'director_dashboard {{ error }}',
             'student_detail.html': 'student_detail'
         })
         
@@ -37,17 +37,97 @@ class TestAnalyticsAPI:
         assert response.status_code == 200
         assert b'officer_dashboard' in response.data
 
-    def test_director_dashboard_success(self, client, app):
-        app.container.analytics_service.return_value.get_director_view.return_value = []
-        response = client.get('/director/dashboard')
-        assert response.status_code == 200
-        assert b'director_dashboard' in response.data
+    def test_director_dashboard_risk_view(self, client, app):
+        # Test default (risk) view
+        app.container.analytics_service.return_value.get_director_risk_view.return_value = []
+        
+        # Mock DB Session for Course lookup
+        session_mock = MagicMock()
+        course_mock = MagicMock()
+        course_mock.course_code = "CS101"
+        session_mock.query.return_value.filter_by.return_value.first.return_value = course_mock
+        app.container.db.SessionLocal.return_value = session_mock
+        
+        import src.api.analytics as analytics_module
+        with patch.object(analytics_module.TokenService, 'verify_token', return_value={'role': 'DIRECTOR', 'sub': 'd1'}):
+            with patch('flask_login.utils._get_user') as mock_current_user:
+                mock_user = MagicMock()
+                mock_user.is_authenticated = True
+                mock_user.role = 'DIRECTOR'
+                mock_user.id = 'd1'
+                mock_current_user.return_value = mock_user
+                
+                response = client.get('/director/dashboard')
+                assert response.status_code == 200
+                assert b'director_dashboard' in response.data
+                app.container.analytics_service.return_value.get_director_risk_view.assert_called_with("CS101")
+
+    def test_director_dashboard_academic_view(self, client, app):
+        # Test academic view
+        app.container.analytics_service.return_value.get_director_academic_view.return_value = []
+        
+        # Mock DB Session for Course lookup
+        session_mock = MagicMock()
+        course_mock = MagicMock()
+        course_mock.course_code = "CS101"
+        session_mock.query.return_value.filter_by.return_value.first.return_value = course_mock
+        app.container.db.SessionLocal.return_value = session_mock
+        
+        import src.api.analytics as analytics_module
+        with patch.object(analytics_module.TokenService, 'verify_token', return_value={'role': 'DIRECTOR', 'sub': 'd1'}):
+            with patch('flask_login.utils._get_user') as mock_current_user:
+                mock_user = MagicMock()
+                mock_user.is_authenticated = True
+                mock_user.role = 'DIRECTOR'
+                mock_user.id = 'd1'
+                mock_current_user.return_value = mock_user
+                
+                response = client.get('/director/dashboard?view=academic')
+                assert response.status_code == 200
+                assert b'director_dashboard' in response.data
+                app.container.analytics_service.return_value.get_director_academic_view.assert_called_with("CS101")
+
+    def test_director_dashboard_no_course(self, client, app):
+        # Mock DB Session for Course lookup - return None
+        session_mock = MagicMock()
+        session_mock.query.return_value.filter_by.return_value.first.return_value = None
+        app.container.db.SessionLocal.return_value = session_mock
+        
+        import src.api.analytics as analytics_module
+        with patch.object(analytics_module.TokenService, 'verify_token', return_value={'role': 'DIRECTOR', 'sub': 'd1'}):
+            with patch('flask_login.utils._get_user') as mock_current_user:
+                mock_user = MagicMock()
+                mock_user.is_authenticated = True
+                mock_user.role = 'DIRECTOR'
+                mock_user.id = 'd1'
+                mock_current_user.return_value = mock_user
+                
+                response = client.get('/director/dashboard')
+                assert response.status_code == 200
+                assert b'No course assigned' in response.data
 
     def test_director_dashboard_error(self, client, app):
-        app.container.analytics_service.return_value.get_director_view.side_effect = Exception("Error")
-        response = client.get('/director/dashboard')
-        assert response.status_code == 200
-        assert b'director_dashboard' in response.data
+        app.container.analytics_service.return_value.get_director_risk_view.side_effect = Exception("Error")
+        
+        # Mock DB Session for Course lookup
+        session_mock = MagicMock()
+        course_mock = MagicMock()
+        course_mock.course_code = "CS101"
+        session_mock.query.return_value.filter_by.return_value.first.return_value = course_mock
+        app.container.db.SessionLocal.return_value = session_mock
+        
+        import src.api.analytics as analytics_module
+        with patch.object(analytics_module.TokenService, 'verify_token', return_value={'role': 'DIRECTOR', 'sub': 'd1'}):
+            with patch('flask_login.utils._get_user') as mock_current_user:
+                mock_user = MagicMock()
+                mock_user.is_authenticated = True
+                mock_user.role = 'DIRECTOR'
+                mock_user.id = 'd1'
+                mock_current_user.return_value = mock_user
+                
+                response = client.get('/director/dashboard')
+                assert response.status_code == 200
+                assert b'Error' in response.data
 
     def test_get_student_detail_success(self, client, app):
         app.container.analytics_service.return_value.get_student_history.return_value = MagicMock(wellbeing_history=[])
@@ -63,12 +143,12 @@ class TestAnalyticsAPI:
         assert response.status_code == 500
 
     def test_get_correlations_success(self, client, app):
-        app.container.analytics_service.return_value.get_director_view.return_value = []
+        app.container.analytics_service.return_value.get_director_risk_view.return_value = []
         response = client.get('/correlations')
         assert response.status_code == 200
 
     def test_get_correlations_error(self, client, app):
-        app.container.analytics_service.return_value.get_director_view.side_effect = Exception("Error")
+        app.container.analytics_service.return_value.get_director_risk_view.side_effect = Exception("Error")
         response = client.get('/correlations')
         assert response.status_code == 500
 
@@ -188,4 +268,28 @@ class TestAnalyticsAPI:
         with patch.object(analytics_module.TokenService, 'verify_token', return_value={'role': 'OFFICER'}):
             response = client.get('/student/s1', headers={'Authorization': 'Bearer token'})
             assert response.status_code == 404, f"Status: {response.status_code}, Data: {response.data}"
+
+    def test_director_dashboard_unauthenticated(self, client, app):
+        """Test director dashboard with unauthenticated user"""
+        with patch('flask_login.utils._get_user') as mock_current_user:
+            mock_user = MagicMock()
+            mock_user.is_authenticated = False
+            mock_current_user.return_value = mock_user
+            
+            response = client.get('/director/dashboard')
+            assert response.status_code == 200
+            assert b'Please log in' in response.data
+
+    def test_director_dashboard_unauthorized_role(self, client, app):
+        """Test director dashboard with non-director role"""
+        with patch('flask_login.utils._get_user') as mock_current_user:
+            mock_user = MagicMock()
+            mock_user.is_authenticated = True
+            mock_user.role = 'STUDENT'
+            mock_current_user.return_value = mock_user
+            
+            response = client.get('/director/dashboard')
+            assert response.status_code == 200
+            assert b'Access denied' in response.data
+
 

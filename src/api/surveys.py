@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, render_template
+from flask_login import login_required, current_user
 from src.models.survey import WellbeingSurvey, SurveyStatus
 
 survey_bp = Blueprint('surveys', __name__)
@@ -180,3 +181,28 @@ def health():
         'status': 'ok',
         'service': 'surveys'
     }), 200
+
+
+@survey_bp.route('/dashboard', methods=['GET'])
+@login_required
+def student_dashboard():
+    """
+    Render the student dashboard
+    """
+    if current_user.role != 'STUDENT':
+        return render_template('403.html'), 403
+        
+    return render_template('student_dashboard.html')
+
+
+@survey_bp.route('/new', methods=['GET'])
+@login_required
+def get_survey_form():
+    """
+    Render the survey form
+    """
+    if current_user.role != 'STUDENT':
+        return render_template('403.html'), 403
+        
+    # TODO: Fetch current academic week/year dynamically
+    return render_template('student_survey.html', week=1, year=2023)

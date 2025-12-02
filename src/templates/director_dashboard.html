@@ -6,23 +6,46 @@
 <div class="mb-4">
     <h1>Course Analytics: {{ course_id }}</h1>
     <p style="color: var(--text-secondary);">Anonymized view of student wellbeing and risk factors.</p>
+
+    <div class="mb-3">
+        <a href="{{ url_for('analytics.director_dashboard', view='risk') }}"
+            class="btn {% if view_mode != 'risk' %}btn-secondary{% endif %}">
+            Risk View (Anonymized)
+        </a>
+        <a href="{{ url_for('analytics.director_dashboard', view='academic') }}"
+            class="btn {% if view_mode != 'academic' %}btn-secondary{% endif %}">
+            Academic View (Unanonymized)
+        </a>
+    </div>
 </div>
 
 <div class="card table-container">
     <table>
         <thead>
             <tr>
-                <th>Anonymized ID</th>
-                <th>Risk Score</th>
+                {% if view_mode == 'academic' %}
+                <th>Student ID</th>
+                <th>Name</th>
                 <th>Average Grade</th>
                 <th>Attendance %</th>
+                {% else %}
+                <th>Anonymized ID</th>
+                <th>Risk Score</th>
+                <th>Primary Driver</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for student in students %}
             <tr>
+                {% if view_mode == 'academic' %}
+                <td>{{ student.student_id }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ "%.1f"|format(student.grade) }}%</td>
+                <td>{{ student.attendance }}%</td>
+                {% else %}
                 <td style="font-family: monospace; color: var(--text-secondary);">{{ student.student_id or 'HIDDEN' }}
-                </td> <!-- Hashed or Hidden -->
+                </td>
                 <td>
                     {% if student.risk_score >= 50 %}
                     <span class="badge badge-danger">{{ "%.1f"|format(student.risk_score) }}</span>
@@ -32,8 +55,8 @@
                     <span class="badge badge-success">{{ "%.1f"|format(student.risk_score) }}</span>
                     {% endif %}
                 </td>
-                <td>{{ student.grade if student.grade is defined else 'N/A' }}%</td>
-                <td>{{ student.attendance if student.attendance is defined else 'N/A' }}%</td>
+                <td>{{ student.driver }}</td>
+                {% endif %}
             </tr>
             {% else %}
             <tr>

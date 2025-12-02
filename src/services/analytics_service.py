@@ -28,12 +28,38 @@ class AnalyticsService:
         self.student_repo = student_repo
         self.survey_repo = survey_repo
 
-    def get_director_view(self, course_id):
+    def _calculate_metrics(self, students):
+        """Helper to calculate grade and attendance metrics."""
+        from src.models.academic import ModuleGrade, AttendanceRegister
+        session = self.student_repo.session
+        
+        for student in students:
+            # 1. Average Grade
+            grades = session.query(ModuleGrade).filter_by(student_id=student.id).all()
+            if grades:
+                avg_grade = sum(g.grade for g in grades) / len(grades)
+            else:
+                avg_grade = 0.0
+            student._temp_grade = avg_grade
+            
+            # 2. Attendance Percentage
+            attendance_records = session.query(AttendanceRegister).filter_by(student_id=student.id).all()
+            if attendance_records:
+                total_classes = len(attendance_records)
+                present_classes = sum(1 for r in attendance_records if r.status == 'Present')
+                attendance_pct = (present_classes / total_classes) * 100
+            else:
+                attendance_pct = 0
+            student._temp_attendance = int(attendance_pct)
+        return students
+
+    def get_director_risk_view(self, course_id):
         """
-        Orchestrates data fetch, anonymization, and risk calculation for the Director view.
+        Returns anonymized and shuffled risk data for the Director.
         """
         try:
             students = self.student_repo.fetch_by_course(course_id)
+            students = self._calculate_metrics(students)
         except Exception as e:
             raise AnalyticsServiceError(f"Failed to fetch student data: {e}")
 
@@ -53,10 +79,33 @@ class AnalyticsService:
 
         try:
             metrics = self.risk_calculator.calculate(anonymized)
+            # Shuffle for additional privacy in Risk View
+            import random
+            random.shuffle(metrics)
+            return metrics
         except Exception as e:
             raise AnalyticsServiceError(f"Risk calculation failed: {e}")
 
-        return metrics
+    def get_director_academic_view(self, course_id):
+        """
+        Returns unanonymized academic data (Name, ID, Grade, Attendance) for the Director.
+        NO Risk Scores.
+        """
+        try:
+            students = self.student_repo.fetch_by_course(course_id)
+            students = self._calculate_metrics(students)
+            
+            results = []
+            for s in students:
+                results.append({
+                    "student_id": s.student_id,
+                    "name": s.name,
+                    "grade": getattr(s, '_temp_grade', 0.0),
+                    "attendance": getattr(s, '_temp_attendance', 0)
+                })
+            return results
+        except Exception as e:
+            raise AnalyticsServiceError(f"Failed to fetch academic data: {e}")
     
     def get_student_history(self, student_id: str) -> StudentHistoryDTO:
         """

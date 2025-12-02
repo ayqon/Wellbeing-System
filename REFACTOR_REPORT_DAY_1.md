@@ -35,4 +35,4 @@ The "Nightly Refactor" for Day 1 successfully addressed all identified architect
 *   **Parsers:** Implement CSV parsers for data ingestion.
 
 ---
-**Signed off by:** Dev 1 (Nightly Refactor Agent)
+**Signed off by:** Dev 1 (Nightly Refactor)

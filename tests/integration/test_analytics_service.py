@@ -3,17 +3,24 @@ from src.services.analytics_service import AnalyticsService
 
 
 class FakeStudent:
-    def __init__(self, student_id, name, email, current_risk_score, missed_surveys=0):
+    def __init__(self, id, student_id, name, email, current_risk_score, missed_surveys=0):
+        self.id = id
         self.student_id = student_id
         self.name = name
         self.email = email
         self.current_risk_score = current_risk_score
         self.missed_surveys = missed_surveys
 
+from unittest.mock import MagicMock
+
 class FakeStudentRepository:
+    def __init__(self):
+        self.session = MagicMock()
+        self.session.query.return_value.filter_by.return_value.all.return_value = []
+
     def fetch_by_course(self, course_id):
         return [
-            FakeStudent("S123", "Alice", "alice@Warwick.ac.uk", 78)
+            FakeStudent(1, "S123", "Alice", "alice@Warwick.ac.uk", 78)
         ]
 
 @pytest.mark.integration
@@ -64,8 +71,9 @@ def test_director_privacy_enforcement():
     )
 
     # --- CALL WITH EXCEPTION HANDLING ---
+    # --- CALL WITH EXCEPTION HANDLING ---
     try:
-        result = svc.get_director_view("CS101")
+        result = svc.get_director_risk_view("CS101")
     except Exception as e:
         pytest.fail(f"AnalyticsService raised an unexpected exception: {e}")
 
