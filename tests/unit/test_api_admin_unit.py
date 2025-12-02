@@ -32,27 +32,27 @@ class TestAdminAPI:
         }
         
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
-            response = client.post('/admin/import', data=data, content_type='multipart/form-data')
+            response = client.post('/admin/import/users', data=data, content_type='multipart/form-data')
             
-            assert response.status_code == 200
-            assert b'admin_dashboard' in response.data
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
             app.container.import_service.return_value.process_user_csv.assert_called_once()
 
     def test_import_users_no_file(self, client, app):
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
-            response = client.post('/admin/import', data={}, content_type='multipart/form-data')
+            response = client.post('/admin/import/users', data={}, content_type='multipart/form-data')
             
-            assert response.status_code == 400
-            # Should flash error and render template (or redirect)
-            # For now assuming it renders template with error
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
             
     def test_import_users_empty_filename(self, client, app):
         data = {
             'file': (io.BytesIO(b""), '')
         }
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
-            response = client.post('/admin/import', data=data, content_type='multipart/form-data')
-            assert response.status_code == 400
+            response = client.post('/admin/import/users', data=data, content_type='multipart/form-data')
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
 
     def test_import_users_partial_success(self, client, app):
         app.container.import_service.return_value.process_user_csv.return_value = {'success': 1, 'errors': 1}
@@ -60,8 +60,9 @@ class TestAdminAPI:
             'file': (io.BytesIO(b"username,password"), 'users.csv')
         }
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
-            response = client.post('/admin/import', data=data, content_type='multipart/form-data')
-            assert response.status_code == 200
+            response = client.post('/admin/import/users', data=data, content_type='multipart/form-data')
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
             # Verify flash message content if possible, or just status code
 
     def test_import_users_exception(self, client, app):
@@ -70,8 +71,9 @@ class TestAdminAPI:
             'file': (io.BytesIO(b"username,password"), 'users.csv')
         }
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
-            response = client.post('/admin/import', data=data, content_type='multipart/form-data')
-            assert response.status_code == 200 # Renders template with error flash
+            response = client.post('/admin/import/users', data=data, content_type='multipart/form-data')
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
 
     def test_import_academic_success(self, client, app):
         app.container.import_service.return_value.process_academic_csv.return_value = {'success': 1, 'errors': 0}
@@ -83,15 +85,16 @@ class TestAdminAPI:
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
             response = client.post('/admin/import/academic', data=data, content_type='multipart/form-data')
             
-            assert response.status_code == 200
-            assert b'admin_dashboard' in response.data
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
             app.container.import_service.return_value.process_academic_csv.assert_called_once()
 
     def test_import_academic_no_file(self, client, app):
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
             response = client.post('/admin/import/academic', data={}, content_type='multipart/form-data')
             
-            assert response.status_code == 400
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
 
     def test_import_academic_empty_filename(self, client, app):
         data = {
@@ -99,7 +102,8 @@ class TestAdminAPI:
         }
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
             response = client.post('/admin/import/academic', data=data, content_type='multipart/form-data')
-            assert response.status_code == 400
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
 
     def test_import_academic_partial_success(self, client, app):
         app.container.import_service.return_value.process_academic_csv.return_value = {'success': 1, 'errors': 1}
@@ -108,7 +112,8 @@ class TestAdminAPI:
         }
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
             response = client.post('/admin/import/academic', data=data, content_type='multipart/form-data')
-            assert response.status_code == 200
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')
 
     def test_import_academic_exception(self, client, app):
         app.container.import_service.return_value.process_academic_csv.side_effect = Exception("Processing error")
@@ -117,4 +122,5 @@ class TestAdminAPI:
         }
         with patch('src.api.admin.render_template', return_value='admin_dashboard') as mock_render:
             response = client.post('/admin/import/academic', data=data, content_type='multipart/form-data')
-            assert response.status_code == 200
+            assert response.status_code == 302
+            assert response.location.endswith('/admin/import')

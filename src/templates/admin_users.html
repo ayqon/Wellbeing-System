@@ -1,0 +1,71 @@
+{% extends "admin_base.html" %}
+
+{% block admin_content %}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Users</h5>
+    </div>
+    <div class="card-body">
+        <!-- Bulk Actions Form -->
+        <form action="{{ url_for('admin.bulk_delete_users') }}" method="POST" id="bulkDeleteForm"
+            onsubmit="return confirm('Are you sure you want to delete the selected users? This action cannot be undone.');">
+
+            <div class="bulk-actions-bar">
+                <button type="submit" class="btn btn-danger btn-sm" id="bulkDeleteBtn" disabled style="display: none;">
+                    <i class="fas fa-trash"></i> Delete Selected <span id="selectedCount"></span>
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">
+                                <div class="checkbox-wrapper">
+                                    <input type="checkbox" id="selectAll">
+                                </div>
+                            </th>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                <div class="checkbox-wrapper">
+                                    <input type="checkbox" name="user_ids" value="{{ user.id }}" class="user-checkbox">
+                                </div>
+                            </td>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td><span class="badge bg-secondary">{{ user.role }}</span></td>
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('Delete user {{ user.username }}?')) { 
+                                        const form = document.createElement('form');
+                                        form.method = 'POST';
+                                        form.action = '{{ url_for('admin.delete_user') }}';
+                                        const input = document.createElement('input');
+                                        input.type = 'hidden';
+                                        input.name = 'user_id';
+                                        input.value = '{{ user.id }}';
+                                        form.appendChild(input);
+                                        document.body.appendChild(form);
+                                        form.submit();
+                                    }">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

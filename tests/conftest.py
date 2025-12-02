@@ -52,6 +52,13 @@ def db_session(app):
             connect_args={"check_same_thread": False},
             poolclass=StaticPool
         )
+        
+        from sqlalchemy import event
+        @event.listens_for(db.engine, "connect")
+        def set_sqlite_pragma(dbapi_connection, connection_record):
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()
         db.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db.engine)
     
     engine = db.engine

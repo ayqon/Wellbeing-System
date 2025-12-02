@@ -83,9 +83,18 @@ class Container:
             )
         return self._import_service
 
+    def system_repository(self):
+        from src.repositories.system_repository import SystemRepository
+        if not hasattr(self, '_system_repo') or not self._system_repo:
+            self._system_repo = SystemRepository(self.db.SessionLocal())
+        return self._system_repo
+
     def admin_service(self):
         from src.services.admin_service import AdminService
         
         if not hasattr(self, '_admin_service') or not self._admin_service:
-            self._admin_service = AdminService(self.user_repository())
+            self._admin_service = AdminService(
+                self.user_repository(),
+                self.system_repository()
+            )
         return self._admin_service

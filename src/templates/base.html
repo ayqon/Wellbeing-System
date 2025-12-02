@@ -22,6 +22,7 @@
                     <a href="{{ url_for('surveys.student_dashboard') }}">Dashboard</a>
                     {% elif current_user.role == 'OFFICER' %}
                     <a href="{{ url_for('analytics.officer_dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('admin.dashboard') }}">Admin</a>
                     {% elif current_user.role == 'DIRECTOR' %}
                     <a href="{{ url_for('analytics.director_dashboard') }}">Dashboard</a>
                     {% endif %}

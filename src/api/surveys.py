@@ -221,5 +221,8 @@ def get_survey_form():
     if current_user.role != 'STUDENT':
         return render_template('403.html'), 403
         
-    # TODO: Fetch current academic week/year dynamically
-    return render_template('student_survey.html', week=1, year=2023)
+    # Fetch current academic week/year dynamically
+    admin_service = current_app.container.admin_service()
+    week, year = admin_service.get_current_academic_week()
+    
+    return render_template('student_survey.html', week=week, year=year)

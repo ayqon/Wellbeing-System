@@ -167,11 +167,17 @@ class TestSurveyAPI:
             mock_user.role = 'STUDENT'
             mock_current_user.return_value = mock_user
             
+            # Mock admin service
+            app.container.admin_service.return_value.get_current_academic_week.return_value = (5, 2023)
+            
             with patch('src.api.surveys.render_template') as mock_render:
                 mock_render.return_value = 'survey_form'
                 response = client.get('/surveys/new')
                 assert response.status_code == 200
                 assert b'survey_form' in response.data
+                
+                # Verify render_template called with correct week/year
+                mock_render.assert_called_with('student_survey.html', week=5, year=2023)
 
     def test_get_survey_form_forbidden(self, client, app):
         with patch('flask_login.utils._get_user') as mock_current_user:

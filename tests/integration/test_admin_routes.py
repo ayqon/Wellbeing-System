@@ -40,4 +40,4 @@ def test_import_route(client):
     # The admin route now renders the dashboard
     response = client.get('/admin/import')
     assert response.status_code == 200
-    assert b"Admin Dashboard" in response.data
+    assert b"Data Import" in response.data

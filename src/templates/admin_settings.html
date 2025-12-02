@@ -1,0 +1,27 @@
+{% extends "admin_base.html" %}
+
+{% block admin_content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Academic Year Configuration</h5>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('admin.update_settings') }}" method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="start_date" class="form-label">Academic Year Start</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date"
+                        value="{{ config.start_date if config and config.start_date else '' }}" required>
+                    <div class="form-text">Used to calculate the current academic week.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="end_date" class="form-label">Academic Year End</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date"
+                        value="{{ config.end_date if config and config.end_date else '' }}" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

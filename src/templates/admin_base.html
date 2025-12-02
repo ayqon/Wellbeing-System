@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Control Panel{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Admin Control Panel</h1>
+        <p class="text-muted">Manage users and system configuration.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <!-- Admin Navigation -->
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'users' %}active{% endif %}"
+                    href="{{ url_for('admin.list_users') }}">User Management</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'settings' %}active{% endif %}"
+                    href="{{ url_for('admin.settings') }}">System Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'import' %}active{% endif %}"
+                    href="{{ url_for('admin.import_data') }}">Data Import</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'add_user' %}active{% endif %}"
+                    href="{{ url_for('admin.add_user_view') }}">Add User</a>
+            </li>
+        </ul>
+
+        <!-- Content Area -->
+        {% block admin_content %}{% endblock %}
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
