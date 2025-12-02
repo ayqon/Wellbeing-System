@@ -4,9 +4,7 @@ from src.models.base import BaseModel, TimestampMixin
 
 class Student(BaseModel, TimestampMixin):
     """
-    Student entity
-    
-    OOP Principle: Encapsulation - Business logic is encapsulated within the class
+    Student entity.
     """
     __tablename__ = 'students'
 
@@ -26,10 +24,10 @@ class Student(BaseModel, TimestampMixin):
 
     def __init__(self, **kwargs):
         """
-        Initialize a Student object
+        Initialize a Student object.
         
         Args:
-            **kwargs: Keyword arguments for student fields
+            **kwargs: Keyword arguments for student fields.
         """
         super().__init__(**kwargs)
         if self.missed_surveys is None:
@@ -37,16 +35,14 @@ class Student(BaseModel, TimestampMixin):
 
     def increment_misses(self):
         """
-        Increments the missed_surveys counter
-        
-        OOP Principle: Encapsulation - Logic is contained within the object
+        Increments the missed_surveys counter.
         """
         self.missed_surveys += 1
     
     def reset_misses(self):
-        """Resets the missed_surveys counter"""
+        """Resets the missed_surveys counter."""
         self.missed_surveys = 0
 
     def __repr__(self):
-        """String representation for debugging purposes"""
+        """String representation for debugging purposes."""
         return f"<Student {self.student_id}: {self.name}>"

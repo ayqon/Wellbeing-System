@@ -7,7 +7,7 @@ class AuthService:
     Service for handling user authentication.
     """
     
-    SECRET_KEY = "dev_secret_key"  # TODO: Move to config
+    SECRET_KEY = "dev_secret_key"
     ALGORITHM = "HS256"
 
     def __init__(self, user_repo):

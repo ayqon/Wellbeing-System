@@ -4,6 +4,9 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Handle user login via form or JSON.
+    """
     if request.method == 'GET':
         return render_template('login.html')
         
@@ -31,36 +34,27 @@ def login():
             if request.is_json:
                 return jsonify({'token': token}), 200
             
-            # For UI, we would ideally set a session/cookie here.
-            # Since we don't have Flask-Login fully wired in this file (it's in app.py?),
-            # we'll assume for now we just redirect. 
-            # BUT: The base.html checks current_user.
-            # If we don't login_user(), current_user won't be set.
-            # We need to import login_user from flask_login if available.
-            # Let's check if we can import it.
+            # Attempt to log in user via Flask-Login if available
+            user = None
             try:
                 from flask_login import login_user
-                # We need a User object. AuthService returns a token.
-                # We should probably get the user from the repo.
                 repo = current_app.container.user_repository()
                 user = repo.get_by_username(username)
                 if user:
                     login_user(user)
             except ImportError:
-                pass # Flask-Login not installed or configured?
+                pass  # pragma: no cover 
             
             # Redirect based on role
-            # We need to know the role.
-            # If we have the user object:
-            if 'user' in locals() and user:
+            if user:
                 if user.role == 'STUDENT':
-                    return redirect(url_for('surveys.student_dashboard')) # Assuming this exists
+                    return redirect(url_for('surveys.student_dashboard'))
                 elif user.role == 'OFFICER':
                     return redirect(url_for('analytics.officer_dashboard'))
                 elif user.role == 'DIRECTOR':
                     return redirect(url_for('analytics.director_dashboard'))
             
-            return redirect(url_for('analytics.officer_dashboard')) # Default fallback
+            return redirect(url_for('analytics.officer_dashboard'))
             
         else:
             if request.is_json:
@@ -76,9 +70,12 @@ def login():
 
 @auth_bp.route('/logout')
 def logout():
+    """
+    Handle user logout.
+    """
     try:
         from flask_login import logout_user
         logout_user()
-    except ImportError:
+    except ImportError:  # pragma: no cover
         pass
     return redirect(url_for('auth.login'))

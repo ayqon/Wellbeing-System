@@ -1,15 +1,7 @@
-from flask import Blueprint, request, jsonify, current_app, render_template
+from flask import Blueprint, request, jsonify, current_app
 from src.models.survey import WellbeingSurvey, SurveyStatus
 
 survey_bp = Blueprint('surveys', __name__)
-
-
-@survey_bp.route('/dashboard', methods=['GET'])
-def student_dashboard():
-    # In a real app, we'd fetch the current week/year from a service or config
-    week = 5
-    year = 2025
-    return render_template('student_survey.html', week=week, year=year)
 
 
 @survey_bp.route('/submit', methods=['POST'])
@@ -31,7 +23,7 @@ def submit_survey():
         409: Survey already completed (cannot resubmit)
     """
     try:
-        # Parse request - handle JSON parsing errors
+        # Parse request
         try:
             data = request.get_json()
         except Exception:
@@ -40,7 +32,6 @@ def submit_survey():
         if not data:
             return jsonify({'error': 'Request body must be JSON'}), 400
         
-        # Extract required fields
         required_fields = ['student_id', 'week', 'year', 'stress', 'sleep']
         missing_fields = [field for field in required_fields if field not in data]
         
@@ -55,10 +46,8 @@ def submit_survey():
         stress = data['stress']
         sleep = data['sleep']
         
-        # Get service from container
         survey_service = current_app.container.survey_service()
         
-        # Delegate to service layer
         survey = survey_service.submit_response(
             student_id=student_id,
             week=week,
@@ -67,7 +56,7 @@ def submit_survey():
             sleep=sleep
         )
         
-        # Build response - handle both real models and mocks
+        # Build response
         survey_data = {
             'survey_id': getattr(survey, 'survey_id', None),
             'student_id': getattr(survey, 'student_id', None),
@@ -78,11 +67,9 @@ def submit_survey():
             'is_critical': getattr(survey, 'is_critical', None)
         }
         
-        # Handle status separately with maximum safety
         try:
             status = getattr(survey, 'status', None)
             if status is not None:
-                # Try to get .value for Enum, otherwise convert to string
                 survey_data['status'] = getattr(status, 'value', None) or str(status)
             else:
                 survey_data['status'] = None
@@ -97,17 +84,14 @@ def submit_survey():
     except ValueError as e:
         error_msg = str(e)
         
-        # Differentiate error types by message content
         if 'not found' in error_msg.lower():
             return jsonify({'error': error_msg}), 404
         elif 'already completed' in error_msg.lower():
             return jsonify({'error': error_msg}), 409
         else:
-            # Validation errors (stress/sleep out of range)
             return jsonify({'error': error_msg}), 400
     
     except Exception as e:
-        # Unexpected errors
         return jsonify({
             'error': 'Internal server error',
             'details': str(e)
@@ -131,7 +115,7 @@ def skip_survey():
         409: Survey already completed or already skipped
     """
     try:
-        # Parse request - handle JSON parsing errors
+        # Parse request
         try:
             data = request.get_json()
         except Exception:
@@ -140,7 +124,6 @@ def skip_survey():
         if not data:
             return jsonify({'error': 'Request body must be JSON'}), 400
         
-        # Extract required fields
         required_fields = ['student_id', 'week', 'year']
         missing_fields = [field for field in required_fields if field not in data]
         
@@ -153,17 +136,14 @@ def skip_survey():
         week = data['week']
         year = data['year']
         
-        # Get service from container
         survey_service = current_app.container.survey_service()
         
-        # Delegate to service layer (returns None on success)
         survey_service.process_skip(
             student_id=student_id,
             week=week,
             year=year
         )
         
-        # Build response
         return jsonify({
             'message': 'Survey marked as skipped',
             'student_id': student_id,
@@ -174,7 +154,6 @@ def skip_survey():
     except ValueError as e:
         error_msg = str(e)
         
-        # Differentiate error types by message content
         if 'not found' in error_msg.lower():
             return jsonify({'error': error_msg}), 404
         elif 'already completed' in error_msg.lower() or 'already skipped' in error_msg.lower():
@@ -183,7 +162,6 @@ def skip_survey():
             return jsonify({'error': error_msg}), 400
     
     except Exception as e:
-        # Unexpected errors
         return jsonify({
             'error': 'Internal server error',
             'details': str(e)

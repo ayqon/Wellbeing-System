@@ -6,8 +6,6 @@ from src.models.base import BaseModel, TimestampMixin
 class Course(BaseModel, TimestampMixin):
     """
     Course model representing an academic course.
-    
-    OOP Principle: Encapsulation - Course manages its relationship with modules
     """
     __tablename__ = 'courses'
 
@@ -47,9 +45,6 @@ class Course(BaseModel, TimestampMixin):
 class Module(BaseModel, TimestampMixin):
     """
     Module model representing a module within a course.
-    
-    OOP Principle: Inheritance - Inherits abstract base from BaseModel
-    OOP Principle: Association - Module belongs to a Course
     """
     __tablename__ = 'modules'
 
@@ -96,7 +91,6 @@ class StudentModule(BaseModel, TimestampMixin):
     """
     Association object representing enrollment of a student in a module.
     
-    OOP Principle: Association Object Pattern
     This is more than a simple join table - it contains enrollment-specific data
     like semester and can be extended with grades, attendance, etc.
     """
@@ -142,8 +136,6 @@ class StudentModule(BaseModel, TimestampMixin):
 class ModuleGrade(BaseModel, TimestampMixin):
     """
     Model representing a grade for a student in a module.
-    
-    OOP Principle: Encapsulation
     """
     __tablename__ = 'module_grades'
 
@@ -169,8 +161,6 @@ class ModuleGrade(BaseModel, TimestampMixin):
 class AttendanceRegister(BaseModel, TimestampMixin):
     """
     Model representing an attendance record for a student in a module.
-    
-    OOP Principle: Encapsulation
     """
     __tablename__ = 'attendance_registers'
 

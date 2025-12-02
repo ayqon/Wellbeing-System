@@ -13,15 +13,25 @@ class AnalyticsServiceError(Exception):
 
 
 class AnalyticsService:
-    ###* **DI:** Inject `RiskCalculator`, `Anonymizer`, and `StudentRepository`.
     def __init__(self, risk_calculator, anonymizer, student_repo, survey_repo: SurveyRepository = None): 
+        """
+        Initialize AnalyticsService.
+        
+        Args:
+            risk_calculator: Service for calculating risk.
+            anonymizer: Service for anonymizing data.
+            student_repo: Repository for student data.
+            survey_repo: Repository for survey data.
+        """
         self.risk_calculator = risk_calculator
         self.anonymizer = anonymizer
         self.student_repo = student_repo
         self.survey_repo = survey_repo
 
-    ###* **Method:** `get_director_view(course_id)`: Orchestrates data fetch $\to$ anonymization $\to$ risk calc.
     def get_director_view(self, course_id):
+        """
+        Orchestrates data fetch, anonymization, and risk calculation for the Director view.
+        """
         try:
             students = self.student_repo.fetch_by_course(course_id)
         except Exception as e:

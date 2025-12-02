@@ -32,8 +32,9 @@ def create_app(config_name="default"):
     
     @login_manager.user_loader
     def load_user(user_id):
-        repo = container.user_repository()
-        return repo.get_by_id(user_id)
+        from flask import current_app
+        repo = current_app.container.user_repository()
+        return repo.get(user_id)
     
     @app.route("/health")
     def health():
@@ -41,6 +42,6 @@ def create_app(config_name="default"):
         
     return app
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     app = create_app()
     app.run(debug=True)

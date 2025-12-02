@@ -9,6 +9,9 @@ class SurveyStatus(enum.Enum):
     SKIPPED = "SKIPPED"
 
 class WellbeingSurvey(BaseModel, TimestampMixin):
+    """
+    Model representing a weekly wellbeing survey submission.
+    """
     __tablename__ = 'wellbeing_surveys'
 
     survey_id = Column(Integer, primary_key=True, autoincrement=True)

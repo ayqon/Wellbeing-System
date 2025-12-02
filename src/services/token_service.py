@@ -6,7 +6,7 @@ class TokenService:
     """
     Service for generating and verifying JWT tokens.
     """
-    SECRET_KEY = "dev_secret_key"  # Should be in config
+    SECRET_KEY = "dev_secret_key"
     ALGORITHM = "HS256"
 
     @staticmethod

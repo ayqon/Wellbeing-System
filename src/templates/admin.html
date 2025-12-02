@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Admin Dashboard</h1>
+        <p class="lead">Manage system data and users.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Import Users</h5>
+            </div>
+            <div class="card-body">
+                <p>Upload a CSV file to import users (Students, Officers, Directors).</p>
+                <form action="{{ url_for('admin.import_users') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="userFile" class="form-label">Select CSV File</label>
+                        <input class="form-control" type="file" id="userFile" name="file" accept=".csv" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Import Users</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Import Academic Data</h5>
+            </div>
+            <div class="card-body">
+                <p>Upload a CSV file to import academic records (Grades, Attendance).</p>
+                <form action="{{ url_for('admin.import_academic') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="academicFile" class="form-label">Select CSV File</label>
+                        <input class="form-control" type="file" id="academicFile" name="file" accept=".csv" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Import Academic Data</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

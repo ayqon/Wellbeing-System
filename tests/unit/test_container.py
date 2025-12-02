@@ -65,3 +65,22 @@ class TestContainer:
         container = Container()
         calculator = container.risk_calculator()
         assert isinstance(calculator, RiskCalculator)
+
+    def test_import_service_injection(self):
+        """Test that ImportService is created with injected dependencies"""
+        from src.services.import_service import ImportService
+        container = Container()
+        import_service = container.import_service()
+        
+        assert isinstance(import_service, ImportService)
+        assert import_service.user_repo is container.user_repository()
+        assert import_service.student_repo is container.student_repository()
+
+    def test_admin_service_injection(self):
+        """Test that AdminService is created with injected dependencies"""
+        from src.services.admin_service import AdminService
+        container = Container()
+        admin_service = container.admin_service()
+        
+        assert isinstance(admin_service, AdminService)
+        assert admin_service.user_repo is container.user_repository()

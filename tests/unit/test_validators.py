@@ -45,3 +45,11 @@ def test_validate_required_fields_missing(client):
     response = client.post('/test/required', json={"name": "Alice"})
     assert response.status_code == 400
     assert "Missing required field: age" in response.json['error']
+
+class TestValidatorUnit:
+    def test_validate_required_fields_empty(self):
+        result = Validator.validate_required_fields({}, ['field'])
+        assert result == "No data provided"
+        
+        result = Validator.validate_required_fields(None, ['field'])
+        assert result == "No data provided"

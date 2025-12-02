@@ -25,13 +25,6 @@ class ImportService:
         self.user_repo = user_repository
         self.student_repo = student_repository
         self.parser = user_csv_parser
-        # We might still need db_session for academic import if we don't refactor that part yet,
-        # or we can access it via repositories if needed, but for now let's assume repositories handle their own persistence
-        # or share a session. Ideally, the service shouldn't know about db_session directly if using repositories.
-        # However, for transaction management (commit/rollback), we might need access to the unit of work.
-        # For this refactor, we'll assume the repositories share the session and we can commit via one of them 
-        # or the caller handles the transaction. But to keep it simple and working with existing tests (which expect service to commit),
-        # we'll access the session from the repository.
         self.db_session = self.user_repo.session
 
     def execute_import(self, file_stream):
@@ -111,12 +104,7 @@ class ImportService:
                     results["details"].append(f"Row error: {str(e)}")
                     self.db_session.rollback() # Rollback the specific row transaction
                     continue
-                except Exception as e:
-                    # Handle individual row errors
-                    results["errors"] += 1
-                    results["details"].append(f"Row error: {str(e)}")
-                    self.db_session.rollback() # Rollback the specific row transaction
-                    continue
+
 
             # Commit all successful changes
             self.db_session.commit()

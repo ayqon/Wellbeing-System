@@ -6,20 +6,20 @@
 <div class="mb-4">
     <a href="{{ url_for('analytics.officer_dashboard') }}" class="btn btn-secondary mb-4">&larr; Back to Dashboard</a>
     <h1>{{ student.name }}</h1>
-    <p style="color: var(--text-secondary);">{{ student.email }}</p>
+    <p class="text-secondary">{{ student.email }}</p>
 </div>
 
-<div class="flex gap-4 mb-4" style="flex-wrap: wrap;">
-    <div class="card" style="flex: 1; min-width: 250px;">
+<div class="flex gap-4 mb-4 flex-wrap">
+    <div class="card flex-1 min-w-250">
         <h3>Risk Score</h3>
         <div
-            style="font-size: 3rem; font-weight: 800; color: {% if student.current_risk_score >= 50 %}var(--danger-color){% elif student.current_risk_score >= 20 %}var(--warning-color){% else %}var(--success-color){% endif %};">
+            class="risk-score-display {% if student.current_risk_score >= 50 %}text-danger{% elif student.current_risk_score >= 20 %}text-warning{% else %}text-success{% endif %}">
             {{ "%.1f"|format(student.current_risk_score) }}
         </div>
-        <p style="color: var(--text-secondary);">Current Risk Level</p>
+        <p class="text-secondary">Current Risk Level</p>
     </div>
 
-    <div class="card" style="flex: 1; min-width: 250px;">
+    <div class="card flex-1 min-w-250">
         <h3>Academic Info</h3>
         <p><strong>Student ID:</strong> {{ student.student_id }}</p>
         <p><strong>Course:</strong> {{ student.course_code }}</p>
@@ -60,14 +60,14 @@
     </div>
 </div>
 
-<div class="flex gap-4" style="flex-wrap: wrap;">
-    <div class="card" style="flex: 1;">
+<div class="flex gap-4 flex-wrap">
+    <div class="card flex-1">
         <h3>Attendance Trend</h3>
-        <p style="color: var(--text-secondary); font-style: italic;">Attendance history visualization coming soon.</p>
+        <p class="text-secondary font-italic">Attendance history visualization coming soon.</p>
     </div>
-    <div class="card" style="flex: 1;">
+    <div class="card flex-1">
         <h3>Grade History</h3>
-        <p style="color: var(--text-secondary); font-style: italic;">Grade history visualization coming soon.</p>
+        <p class="text-secondary font-italic">Grade history visualization coming soon.</p>
     </div>
 </div>
 {% endblock %}

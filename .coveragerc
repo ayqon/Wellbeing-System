@@ -1,0 +1,5 @@
+[run]
+omit =
+    src/seed.py
+    debug_*.py
+    inspect_db.py

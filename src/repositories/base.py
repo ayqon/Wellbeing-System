@@ -27,7 +27,7 @@ class AbstractRepository(ABC, Generic[T]):
         Returns:
             T: The added entity, potentially with updated fields (e.g., auto-generated ID).
         """
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def get(self, id: Any) -> Optional[T]:
@@ -40,7 +40,7 @@ class AbstractRepository(ABC, Generic[T]):
         Returns:
             Optional[T]: The entity if found, otherwise None.
         """
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def list(self) -> List[T]:
@@ -50,7 +50,7 @@ class AbstractRepository(ABC, Generic[T]):
         Returns:
             List[T]: A list of all entities.
         """
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def update(self, entity: T) -> T:
@@ -63,7 +63,7 @@ class AbstractRepository(ABC, Generic[T]):
         Returns:
             T: The updated entity.
         """
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def delete(self, id: Any) -> bool:
@@ -76,7 +76,7 @@ class AbstractRepository(ABC, Generic[T]):
         Returns:
             bool: True if the entity was successfully deleted, False if it was not found.
         """
-        pass
+        pass  # pragma: no cover
 
 class SqlAlchemyRepository(AbstractRepository[T]):
     """

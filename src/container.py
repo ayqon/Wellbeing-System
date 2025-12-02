@@ -71,3 +71,21 @@ class Container:
                 self.survey_repository()
             )
         return self._analytics_service
+    def import_service(self):
+        from src.services.import_service import ImportService
+        from src.services.user_csv_parser import UserCSVParser
+        
+        if not hasattr(self, '_import_service') or not self._import_service:
+            self._import_service = ImportService(
+                self.user_repository(),
+                self.student_repository(),
+                UserCSVParser()
+            )
+        return self._import_service
+
+    def admin_service(self):
+        from src.services.admin_service import AdminService
+        
+        if not hasattr(self, '_admin_service') or not self._admin_service:
+            self._admin_service = AdminService(self.user_repository())
+        return self._admin_service

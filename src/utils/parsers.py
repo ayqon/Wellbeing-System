@@ -13,7 +13,15 @@ class RawModuleGrade:
 class AbstractParser(ABC):
     @abstractmethod
     def parse(self, file_stream) -> List[Any]:
-        """Parses a file stream and returns a list of objects."""
+        """
+        Parses a file stream and returns a list of objects.
+        
+        Args:
+            file_stream: The input file stream.
+            
+        Returns:
+            List[Any]: A list of parsed objects.
+        """
         pass
 
 class UserCSVParser(AbstractParser):

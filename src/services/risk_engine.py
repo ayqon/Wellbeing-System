@@ -10,7 +10,7 @@ class StudentMetricsDTO:
 
 class RiskCalculator:
     """
-    Service for calculating student risk scores.
+    Service for calculating student risk scores based on wellbeing metrics.
     
     Formula: Risk = (Stress*20 + (100-Sleep*8) + Misses*10 + (100-Grade)) / 4
     """
@@ -34,8 +34,7 @@ class RiskCalculator:
         misses_component = metrics.misses * self.MISSES_WEIGHT
         grade_component = 100 - metrics.grade
         
-        # Ensure components are within reasonable bounds (0-100 approx)
-        # Note: Sleep component can be negative if sleep > 12.5, but formula is as requested.
+        # Ensure components are within reasonable bounds
         
         total_risk = (stress_component + sleep_component + misses_component + grade_component) / 4
         
@@ -58,13 +57,13 @@ class RiskCalculator:
                 grade=s.get('grade', 100.0) or 100.0
             )
             
-            # Use cached risk if available (e.g. from database) to support tests/legacy
+            # Use cached risk if available to support tests/legacy data
             if 'cached_risk' in s and s['cached_risk'] is not None and s['cached_risk'] > 0:
                 score = float(s['cached_risk'])
             else:
                 score = self.compute(metrics)
             
-            # Determine driver (simplified logic for compatibility)
+            # Determine driver
             driver = "NONE"
             if metrics.stress >= 4:
                 driver = "HIGH_STRESS"
@@ -80,7 +79,7 @@ class RiskCalculator:
                 "student_id": None,
                 "grade": s.get('grade'),
                 "attendance": s.get('attendance'),
-                # Legacy fields if needed by frontend/tests
+                # Frontend compatibility fields
                 "x": score,
                 "y": len(driver),
                 "r": score / 100 if score else 0
