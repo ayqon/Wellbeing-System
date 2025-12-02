@@ -9,17 +9,27 @@
     <p class="text-secondary">{{ student.email }}</p>
 </div>
 
-<div class="flex gap-4 mb-4 flex-wrap">
-    <div class="card flex-1 min-w-250">
+<div class="grid"
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+    <!-- Performance Metrics -->
+    {% if chart_data %}
+    <div class="card">
+        <h3>Performance Overview</h3>
+        <canvas id="performanceChart" width="400" height="400"></canvas>
+    </div>
+    {% endif %}
+
+    <!-- Risk and Academic Info -->
+    <div class="card">
         <h3>Risk Score</h3>
         <div
             class="risk-score-display {% if student.current_risk_score >= 50 %}text-danger{% elif student.current_risk_score >= 20 %}text-warning{% else %}text-success{% endif %}">
             {{ "%.1f"|format(student.current_risk_score) }}
         </div>
         <p class="text-secondary">Current Risk Level</p>
-    </div>
 
-    <div class="card flex-1 min-w-250">
+        <hr style="margin: 1.5rem 0;">
+
         <h3>Academic Info</h3>
         <p><strong>Student ID:</strong> {{ student.student_id }}</p>
         <p><strong>Course:</strong> {{ student.course_code }}</p>
@@ -29,7 +39,6 @@
 
 <div class="card mb-4">
     <h3>Wellbeing History (Trend)</h3>
-    <!-- Placeholder for history chart or table -->
     <div class="table-container mt-4">
         <table>
             <thead>
@@ -60,14 +69,14 @@
     </div>
 </div>
 
-<div class="flex gap-4 flex-wrap">
-    <div class="card flex-1">
-        <h3>Attendance Trend</h3>
-        <p class="text-secondary font-italic">Attendance history visualization coming soon.</p>
-    </div>
-    <div class="card flex-1">
-        <h3>Grade History</h3>
-        <p class="text-secondary font-italic">Grade history visualization coming soon.</p>
-    </div>
-</div>
+{% if chart_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    window.chartData = {{ chart_data | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/radar_chart.js') }}"></script>
+<script>
+    initRadarChart('performanceChart', '{{ student.student_id }}');
+</script>
+{% endif %}
 {% endblock %}

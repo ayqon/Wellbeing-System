@@ -80,7 +80,14 @@ def get_student_detail(student_id):
         repo = current_app.container.student_repository()
         student = repo.get_by_student_id(student_id)
         
-        return render_template('student_detail.html', student=student, history=history_dto.wellbeing_history)
+        # Fetch radar chart data
+        chart_data = None
+        try:
+            chart_data = service.get_student_metrics_with_cohort(student_id)
+        except Exception as e:
+            current_app.logger.error(f"Failed to load chart data for {student_id}: {str(e)}")
+        
+        return render_template('student_detail.html', student=student, history=history_dto.wellbeing_history, chart_data=chart_data)
     except Exception as e:
         return f"Error: {str(e)}", 500
 

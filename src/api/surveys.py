@@ -187,12 +187,29 @@ def health():
 @login_required
 def student_dashboard():
     """
-    Render the student dashboard
+    Render the student dashboard with radar chart data
     """
     if current_user.role != 'STUDENT':
         return render_template('403.html'), 403
+    
+    # Fetch student record to get full name
+    student_repo = current_app.container.student_repository()
+    student = student_repo.get_by_student_id(current_user.username)
+    student_name = student.name if student else current_user.username
+    
+    # Fetch student metrics with cohort averages for radar chart
+    chart_data = None
+    try:
+        analytics_service = current_app.container.analytics_service()
+        chart_data = analytics_service.get_student_metrics_with_cohort(current_user.username)
+        current_app.logger.info(f"Chart data loaded successfully for {current_user.username}")
+    except Exception as e:
+        # Log the error for debugging
+        current_app.logger.error(f"Failed to load chart data for {current_user.username}: {str(e)}")
+        import traceback
+        current_app.logger.error(traceback.format_exc())
         
-    return render_template('student_dashboard.html')
+    return render_template('student_dashboard.html', chart_data=chart_data, student_name=student_name)
 
 
 @survey_bp.route('/new', methods=['GET'])

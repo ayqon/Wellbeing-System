@@ -169,6 +169,103 @@ class AnalyticsService:
             average_sleep=avg_sleep
         )
 
+    def get_student_metrics_with_cohort(self, student_id: str):
+        """
+        Get normalized student metrics (0-100 scale) compared to cohort averages.
+        Returns data formatted for radar chart visualization.
+        """
+        try:
+            student = self.student_repo.get_by_student_id(student_id)
+        except Exception as e:
+            raise AnalyticsServiceError(f"Failed to fetch student: {e}")
+        
+        if not student:
+            raise AnalyticsServiceError(f"Student {student_id} not found")
+        
+        course_code = student.course_code
+        
+        # Get all students in the same course for cohort calculations
+        try:
+            cohort_students = self.student_repo.fetch_by_course(course_code)
+        except Exception as e:
+            raise AnalyticsServiceError(f"Failed to fetch cohort: {e}")
+        
+        # Calculate metrics for the individual student and cohort
+        cohort_students = self._calculate_metrics(cohort_students)
+        
+        # Find the target student in the calculated metrics
+        target_student = next((s for s in cohort_students if s.student_id == student_id), None)
+        if not target_student:
+            raise AnalyticsServiceError(f"Student {student_id} not found in calculated metrics")
+        
+        # Get student's recent surveys for stress/sleep averages
+        try:
+            recent_surveys = self.survey_repo.get_by_student(student_id) if self.survey_repo else []
+            completed_surveys = [s for s in recent_surveys if s.status == SurveyStatus.COMPLETED]
+        except Exception as e:
+            raise AnalyticsServiceError(f"Failed to fetch surveys: {e}")
+        
+        # Calculate student metrics from most recent survey
+        student_stress = 0
+        student_sleep = 0
+        if completed_surveys:
+            # Use the most recent completed survey (they're already ordered chronologically)
+            most_recent = completed_surveys[-1]
+            student_stress = most_recent.stress if most_recent.stress is not None else 0
+            student_sleep = most_recent.sleep if most_recent.sleep is not None else 0
+        
+        student_grade = getattr(target_student, '_temp_grade', 0.0)
+        student_attendance = getattr(target_student, '_temp_attendance', 0)
+        
+        # Calculate cohort averages
+        cohort_grades = [getattr(s, '_temp_grade', 0.0) for s in cohort_students]
+        cohort_attendances = [getattr(s, '_temp_attendance', 0) for s in cohort_students]
+        
+        # Get all cohort surveys for stress/sleep averages
+        cohort_stress_values = []
+        cohort_sleep_values = []
+        for s in cohort_students:
+            try:
+                surveys = self.survey_repo.get_by_student(s.student_id) if self.survey_repo else []
+                completed = [sv for sv in surveys if sv.status == SurveyStatus.COMPLETED]
+                cohort_stress_values.extend([sv.stress for sv in completed if sv.stress is not None])
+                cohort_sleep_values.extend([sv.sleep for sv in completed if sv.sleep is not None])
+            except:
+                pass
+        
+        cohort_stress = sum(cohort_stress_values) / len(cohort_stress_values) if cohort_stress_values else 0
+        cohort_sleep = sum(cohort_sleep_values) / len(cohort_sleep_values) if cohort_sleep_values else 0
+        cohort_grade = sum(cohort_grades) / len(cohort_grades) if cohort_grades else 0
+        cohort_attendance = sum(cohort_attendances) / len(cohort_attendances) if cohort_attendances else 0
+        
+        # Normalize to 0-100 scale
+        def normalize_stress(stress):
+            # Direct scaling: higher stress = higher value on chart (more visual impact)
+            return (stress / 5) * 100 if stress else 0
+        
+        def normalize_sleep(sleep):
+            # Target 8 hours = 100%, scale proportionally
+            return min((sleep / 8) * 100, 100) if sleep else 0
+        
+        def normalize_attendance(attendance):
+            return attendance  # Already in percentage
+        
+        return {
+            'student': {
+                'stress': round(normalize_stress(student_stress), 2),
+                'sleep': round(normalize_sleep(student_sleep), 2),
+                'grades': round(student_grade, 2),
+                'attendance': round(normalize_attendance(student_attendance), 2)
+            },
+            'cohort': {
+                'stress': round(normalize_stress(cohort_stress), 2),
+                'sleep': round(normalize_sleep(cohort_sleep), 2),
+                'grades': round(cohort_grade, 2),
+                'attendance': round(normalize_attendance(cohort_attendance), 2)
+            }
+        }
+
+
     def get_officer_snapshot(self):
         """
         Get risk snapshot for all students (Officer View).
