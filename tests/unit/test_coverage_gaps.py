@@ -86,16 +86,7 @@ class TestCoverageGaps:
         assert response.status_code == 302
         assert response.location.endswith('/admin/import')
 
-    def test_import_academic_generic_exception(self, client, app):
-        # Test generic exception (line 190)
-        app.container.import_service.return_value.process_academic_csv.side_effect = Exception("Unexpected error")
-        
-        data = {
-            'file': (io.BytesIO(b"student_id,module"), 'academic.csv')
-        }
-        response = client.post('/admin/import/academic', data=data, content_type='multipart/form-data')
-        assert response.status_code == 302
-        assert response.location.endswith('/admin/import')
+
 
     def test_service_bulk_delete_partial_exception(self):
         # Test exception inside loop in admin_service.bulk_delete_users (lines 70-71)

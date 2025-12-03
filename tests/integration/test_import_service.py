@@ -78,17 +78,9 @@ def test_process_user_csv_invalid_format(import_service):
     with pytest.raises(ValueError, match="Missing required columns"):
         import_service.process_user_csv(file_stream)
 
-def test_process_academic_csv_grades(import_service, db_session):
+def test_process_grade_csv_valid(import_service, db_session):
     """
     Test the successful import of academic grade data.
-    
-    Scenario:
-    - Pre-requisite: A Student and a Module exist in the database.
-    - A CSV containing a grade record for the student and module is provided.
-    
-    Assertions:
-    - Result success count should be 1.
-    - A ModuleGrade record should be created with the correct grade value.
     """
     # Setup: Create Student and Module
     student = Student(student_id="S12345", name="Alice", email="alice@test.com")
@@ -99,11 +91,11 @@ def test_process_academic_csv_grades(import_service, db_session):
     db_session.add(module)
     db_session.commit()
     
-    csv_content = "student_id,module_code,type,value,date\n" \
-                  "S12345,M101,grade,85,2023-10-01"
+    csv_content = "student_id,module_code,grade\n" \
+                  "S12345,M101,85"
     file_stream = io.StringIO(csv_content)
     
-    results = import_service.process_academic_csv(file_stream)
+    results = import_service.process_grade_csv(file_stream)
     
     assert results["success"] == 1
     
@@ -114,17 +106,9 @@ def test_process_academic_csv_grades(import_service, db_session):
     assert grade.student_id == student.id
     assert grade.module_id == module.id
 
-def test_process_academic_csv_attendance(import_service, db_session):
+def test_process_attendance_csv_valid(import_service, db_session):
     """
     Test the successful import of academic attendance data.
-    
-    Scenario:
-    - Pre-requisite: A Student and a Module exist in the database.
-    - A CSV containing an attendance record is provided.
-    
-    Assertions:
-    - Result success count should be 1.
-    - An AttendanceRegister record should be created with the correct status and date.
     """
     # Setup
     student = Student(student_id="S12345", name="Alice", email="alice@test.com")
@@ -135,11 +119,11 @@ def test_process_academic_csv_attendance(import_service, db_session):
     db_session.add(module)
     db_session.commit()
     
-    csv_content = "student_id,module_code,type,value,date\n" \
-                  "S12345,M101,attendance,Present,2023-10-01"
+    csv_content = "student_id,module_code,date,status\n" \
+                  "S12345,M101,2023-10-01,Present"
     file_stream = io.StringIO(csv_content)
     
-    results = import_service.process_academic_csv(file_stream)
+    results = import_service.process_attendance_csv(file_stream)
     
     assert results["success"] == 1
     

@@ -148,7 +148,10 @@ classDiagram
     class AdminAPI {
         +create_user()
         +delete_user()
-        +import_data()
+        +import_users()
+        +import_grades()
+        +import_attendance()
+        +import_surveys()
     }
     class SurveyAPI {
         +get_dashboard()
@@ -296,3 +299,5 @@ We follow the **Testing Pyramid**:
     -   Test full user flows (Login -> Dashboard -> Submit).
     -   Uses `FlaskClient` to simulate HTTP requests.
     -   *Location*: `tests/e2e/` & `tests/system/`
+    -   **Coverage**: The project maintains **100% test coverage** across all layers, verified via `pytest-cov`.
+

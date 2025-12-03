@@ -120,9 +120,10 @@ src/
 - **`get_current_academic_week()`**: Calculates current week number based on start date.
 
 ### `ImportService`
-- **`execute_import(file_stream)`**: Orchestrates import based on file content.
 - **`process_user_csv(stream)`**: Parses and imports Users and Students.
-- **`process_academic_csv(stream)`**: Parses and imports Grades/Attendance.
+- **`process_grade_csv(stream)`**: Parses and imports Module Grades.
+- **`process_attendance_csv(stream)`**: Parses and imports Attendance records.
+- **`process_survey_csv(stream)`**: Parses and imports historical Wellbeing Surveys.
 
 ### `AnalyticsService`
 - **`get_officer_snapshot()`**: Returns risk data for all students (Officer view).
@@ -154,7 +155,10 @@ src/
 - `POST /settings/update`: Update settings action.
 - `GET /import`: Import data form.
 - `POST /import/users`: Import users CSV.
-- `POST /import/academic`: Import academic CSV.
+- `POST /import/grades`: Import grades CSV.
+- `POST /import/attendance`: Import attendance CSV.
+- `POST /import/surveys`: Import surveys CSV.
+- `GET /import/template/<type>`: Download CSV templates.
 
 ### `analytics.py` (`/analytics`)
 - `GET /officer/dashboard`: Officer dashboard view.
@@ -174,6 +178,8 @@ src/
 ### `src/utils/parsers.py`
 - **`UserCSVParser`**: Parses user/student CSVs.
 - **`GradeCSVParser`**: Parses grade CSVs.
+- **`AttendanceCSVParser`**: Parses attendance CSVs.
+- **`SurveyCSVParser`**: Parses survey CSVs.
 
 ### `src/utils/privacy.py`
 - **`Anonymizer`**: Hashes user IDs and redacts PII for privacy-preserving views.

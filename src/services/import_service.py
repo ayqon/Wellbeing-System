@@ -27,28 +27,7 @@ class ImportService:
         self.parser = user_csv_parser
         self.db_session = self.user_repo.session
 
-    def execute_import(self, file_stream):
-        """
-        Orchestrates the import process.
-        Determines the type of import based on file content or context.
-        For now, defaults to User import or checks headers.
-        """
-        # Simple heuristic: Check headers to decide strategy
-        # Note: This consumes the stream, so we need to reset it
-        if hasattr(file_stream, 'read') and hasattr(file_stream, 'seek'):
-            pos = file_stream.tell()
-            header_line = file_stream.readline()
-            if isinstance(header_line, bytes):
-                 header_line = header_line.decode('utf-8')
-            file_stream.seek(pos) # Reset
 
-            if 'username' in header_line:
-                return self.process_user_csv(file_stream)
-            elif 'module_code' in header_line:
-                return self.process_academic_csv(file_stream)
-        
-        # Fallback or error
-        return self.process_user_csv(file_stream)
 
     def process_user_csv(self, file_stream):
         """
@@ -116,91 +95,127 @@ class ImportService:
 
         return results
 
-    def process_academic_csv(self, file_stream):
+    def process_grade_csv(self, file_stream):
         """
-        Process a CSV file containing academic data (grades or attendance).
-        
-        The CSV is expected to have the following columns:
-        - student_id: ID of the student (must exist in DB)
-        - module_code: Code of the module (must exist in DB)
-        - type: 'grade' or 'attendance'
-        - value: The grade value (0-100) or attendance status (e.g., 'Present')
-        - date: Date of the record in YYYY-MM-DD format
-        
-        Args:
-            file_stream: A file-like object containing the CSV data.
-            
-        Returns:
-            dict: A summary of the import process containing success/error counts.
+        Process a CSV file containing grade data.
         """
         results = {"success": 0, "errors": 0, "details": []}
-        
         try:
-            # Reset stream position
-            if hasattr(file_stream, 'seek'):
-                file_stream.seek(0)
+            # Reset stream
+            if hasattr(file_stream, 'seek'): file_stream.seek(0)
             
-            # Ensure text mode
-            if hasattr(file_stream, 'read') and isinstance(file_stream.read(0), bytes):
-                 file_stream = io.TextIOWrapper(file_stream, encoding='utf-8')
-            if hasattr(file_stream, 'seek'):
-                file_stream.seek(0)
-                
-            reader = csv.DictReader(file_stream)
-            
-            # Validate headers
-            required_columns = {'student_id', 'module_code', 'type', 'value', 'date'}
-            if not reader.fieldnames or not required_columns.issubset(set(reader.fieldnames)):
-                raise ValueError(f"Missing required columns. Expected: {required_columns}")
+            # Use local parser since we didn't inject it (simplification for now)
+            from src.utils.parsers import GradeCSVParser
+            parser = GradeCSVParser()
+            rows = parser.parse(file_stream)
 
-            for row in reader:
+            for row in rows:
                 try:
-                    # Lookup Student by student_id
-                    # Use repository if available, otherwise fallback to session query (or add method to student repo)
-                    student = self.student_repo.get_by_student_id(row['student_id'])
-                    if not student:
-                        raise ValueError(f"Student not found: {row['student_id']}")
+                    student = self.student_repo.get_by_student_id(row.student_id)
+                    if not student: raise ValueError(f"Student not found: {row.student_id}")
 
-                    # Lookup Module by module_code
-                    # We don't have a ModuleRepository injected yet, so we'll use the session directly for now
-                    # or we should have injected it. For this task, we'll use session.
-                    module = self.db_session.query(Module).filter_by(module_code=row['module_code']).first()
-                    if not module:
-                        raise ValueError(f"Module not found: {row['module_code']}")
+                    module = self.db_session.query(Module).filter_by(module_code=row.module_code).first()
+                    if not module: raise ValueError(f"Module not found: {row.module_code}")
 
-                    # Parse date
-                    date_obj = datetime.strptime(row['date'], '%Y-%m-%d')
-
-                    # Handle different data types based on 'type' column
-                    if row['type'] == 'grade':
-                        grade = ModuleGrade(
-                            student_id=student.id,
-                            module_id=module.id,
-                            grade=int(row['value'])
-                        )
-                        self.db_session.add(grade)
-                    elif row['type'] == 'attendance':
-                        attendance = AttendanceRegister(
-                            student_id=student.id,
-                            module_id=module.id,
-                            date=date_obj,
-                            status=row['value']
-                        )
-                        self.db_session.add(attendance)
-                    else:
-                        raise ValueError(f"Unknown type: {row['type']}")
-
+                    grade = ModuleGrade(
+                        student_id=student.id,
+                        module_id=module.id,
+                        grade=row.grade
+                    )
+                    self.db_session.add(grade)
                     results["success"] += 1
                 except Exception as e:
                     results["errors"] += 1
                     results["details"].append(f"Row error: {str(e)}")
                     continue
-
-            # Commit changes
+            
             self.db_session.commit()
-
         except Exception as e:
             self.db_session.rollback()
             raise e
+        return results
 
+    def process_attendance_csv(self, file_stream):
+        """
+        Process a CSV file containing attendance data.
+        """
+        results = {"success": 0, "errors": 0, "details": []}
+        try:
+            if hasattr(file_stream, 'seek'): file_stream.seek(0)
+            
+            from src.utils.parsers import AttendanceCSVParser
+            parser = AttendanceCSVParser()
+            rows = parser.parse(file_stream)
+
+            for row in rows:
+                try:
+                    student = self.student_repo.get_by_student_id(row.student_id)
+                    if not student: raise ValueError(f"Student not found: {row.student_id}")
+
+                    module = self.db_session.query(Module).filter_by(module_code=row.module_code).first()
+                    if not module: raise ValueError(f"Module not found: {row.module_code}")
+
+                    date_obj = datetime.strptime(row.date, '%Y-%m-%d')
+                    
+                    attendance = AttendanceRegister(
+                        student_id=student.id,
+                        module_id=module.id,
+                        date=date_obj,
+                        status=row.status
+                    )
+                    self.db_session.add(attendance)
+                    results["success"] += 1
+                except Exception as e:
+                    results["errors"] += 1
+                    results["details"].append(f"Row error: {str(e)}")
+                    continue
+            
+            self.db_session.commit()
+        except Exception as e:
+            self.db_session.rollback()
+            raise e
+        return results
+
+    def process_survey_csv(self, file_stream):
+        """
+        Process a CSV file containing survey data.
+        """
+        results = {"success": 0, "errors": 0, "details": []}
+        try:
+            if hasattr(file_stream, 'seek'): file_stream.seek(0)
+            
+            from src.utils.parsers import SurveyCSVParser
+            from src.models.survey import WellbeingSurvey, SurveyStatus
+            parser = SurveyCSVParser()
+            rows = parser.parse(file_stream)
+
+            for row in rows:
+                try:
+                    # Validate student exists (Survey uses student_id string FK)
+                    student = self.student_repo.get_by_student_id(row.student_id)
+                    if not student: raise ValueError(f"Student not found: {row.student_id}")
+
+                    # Determine if critical
+                    is_critical = row.stress > 4 or row.sleep < 4
+
+                    survey = WellbeingSurvey(
+                        student_id=row.student_id,
+                        week=row.week,
+                        year=datetime.now().year, # Default to current year for import
+                        status=SurveyStatus.COMPLETED,
+                        stress=row.stress,
+                        sleep=row.sleep,
+                        is_critical=is_critical
+                    )
+                    self.db_session.add(survey)
+                    results["success"] += 1
+                except Exception as e:
+                    results["errors"] += 1
+                    results["details"].append(f"Row error: {str(e)}")
+                    continue
+            
+            self.db_session.commit()
+        except Exception as e:
+            self.db_session.rollback()
+            raise e
         return results

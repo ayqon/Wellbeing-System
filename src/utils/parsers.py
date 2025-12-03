@@ -48,6 +48,11 @@ class UserCSVParser(AbstractParser):
 class GradeCSVParser(AbstractParser):
     def parse(self, file_stream) -> List[RawModuleGrade]:
         reader = csv.DictReader(file_stream)
+        
+        required_fields = {'student_id', 'module_code', 'grade'}
+        if not reader.fieldnames or not required_fields.issubset(set(reader.fieldnames)):
+            raise ValueError(f"Missing required columns. Expected: {required_fields}")
+
         grades = []
         for row in reader:
             grades.append(RawModuleGrade(
@@ -56,3 +61,53 @@ class GradeCSVParser(AbstractParser):
                 grade=float(row['grade'])
             ))
         return grades
+
+@dataclass
+class RawAttendance:
+    student_id: str
+    module_code: str
+    date: str
+    status: str
+
+class AttendanceCSVParser(AbstractParser):
+    def parse(self, file_stream) -> List[RawAttendance]:
+        reader = csv.DictReader(file_stream)
+        
+        required_fields = {'student_id', 'module_code', 'date', 'status'}
+        if not reader.fieldnames or not required_fields.issubset(set(reader.fieldnames)):
+            raise ValueError(f"Missing required columns. Expected: {required_fields}")
+
+        attendance_records = []
+        for row in reader:
+            attendance_records.append(RawAttendance(
+                student_id=row['student_id'],
+                module_code=row['module_code'],
+                date=row['date'],
+                status=row['status']
+            ))
+        return attendance_records
+
+@dataclass
+class RawSurvey:
+    student_id: str
+    week: int
+    stress: int
+    sleep: float
+
+class SurveyCSVParser(AbstractParser):
+    def parse(self, file_stream) -> List[RawSurvey]:
+        reader = csv.DictReader(file_stream)
+        
+        required_fields = {'student_id', 'week', 'stress', 'sleep'}
+        if not reader.fieldnames or not required_fields.issubset(set(reader.fieldnames)):
+            raise ValueError(f"Missing required columns. Expected: {required_fields}")
+
+        surveys = []
+        for row in reader:
+            surveys.append(RawSurvey(
+                student_id=row['student_id'],
+                week=int(row['week']),
+                stress=int(row['stress']),
+                sleep=float(row['sleep'])
+            ))
+        return surveys

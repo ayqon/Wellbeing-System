@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
+from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, Response
 import io
+import csv
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -167,11 +168,22 @@ def import_users():
             
     return redirect(url_for('admin.import_data'))
 
-@admin_bp.route('/import/academic', methods=['POST'])
-def import_academic():
-    """
-    Handle academic data import via CSV.
-    """
+@admin_bp.route('/import/grades', methods=['POST'])
+def import_grades():
+    """Handle grade import via CSV."""
+    return _handle_import('process_grade_csv', 'grades')
+
+@admin_bp.route('/import/attendance', methods=['POST'])
+def import_attendance():
+    """Handle attendance import via CSV."""
+    return _handle_import('process_attendance_csv', 'attendance')
+
+@admin_bp.route('/import/surveys', methods=['POST'])
+def import_surveys():
+    """Handle survey import via CSV."""
+    return _handle_import('process_survey_csv', 'surveys')
+
+def _handle_import(method_name, type_label):
     if 'file' not in request.files:
         flash('No file part', 'danger')
         return redirect(url_for('admin.import_data'))
@@ -183,17 +195,44 @@ def import_academic():
         
     if file:
         try:
-            # Convert to text stream for the service
             stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
             import_service = current_app.container.import_service()
-            result = import_service.process_academic_csv(stream)
+            method = getattr(import_service, method_name)
+            result = method(stream)
             
             if result['errors'] > 0:
                 flash(f"Import completed with errors. Success: {result['success']}, Errors: {result['errors']}", 'warning')
             else:
-                flash(f"Import successful. Added {result['success']} academic records.", 'success')
-                
+                flash(f"Import successful. Added {result['success']} {type_label}.", 'success')
         except Exception as e:
             flash(f"Error processing file: {str(e)}", 'danger')
             
     return redirect(url_for('admin.import_data'))
+
+@admin_bp.route('/import/template/<type>', methods=['GET'])
+def download_template(type):
+    """Download CSV template for imports."""
+    si = io.StringIO()
+    cw = csv.writer(si)
+    
+    if type == 'users':
+        cw.writerow(['username', 'password_hash', 'role', 'student_id', 'name', 'email'])
+        cw.writerow(['jdoe', 'hashed_pw', 'student', 'S12345', 'John Doe', 'john@example.com'])
+    elif type == 'grades':
+        cw.writerow(['student_id', 'module_code', 'grade'])
+        cw.writerow(['S12345', 'WM9QF', '85'])
+    elif type == 'attendance':
+        cw.writerow(['student_id', 'module_code', 'date', 'status'])
+        cw.writerow(['S12345', 'WM9QF', '2025-10-01', 'Present'])
+    elif type == 'surveys':
+        cw.writerow(['student_id', 'week', 'stress', 'sleep'])
+        cw.writerow(['S12345', '5', '3', '7.5'])
+    else:
+        return "Invalid template type", 400
+        
+    output = si.getvalue()
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-disposition": f"attachment; filename=template_{type}.csv"}
+    )

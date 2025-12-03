@@ -2,10 +2,15 @@
 
 {% block admin_content %}
 <div class="row">
+    <!-- Row 1: Users and Grades -->
     <div class="col-md-6">
         <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Import Users</h5>
+                <a href="{{ url_for('admin.download_template', type='users') }}"
+                    class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-download"></i> Template
+                </a>
             </div>
             <div class="card-body">
                 <form action="{{ url_for('admin.import_users') }}" method="post" enctype="multipart/form-data">
@@ -20,16 +25,64 @@
     </div>
     <div class="col-md-6">
         <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">Import Academic Data</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Import Grades</h5>
+                <a href="{{ url_for('admin.download_template', type='grades') }}"
+                    class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-download"></i> Template
+                </a>
             </div>
             <div class="card-body">
-                <form action="{{ url_for('admin.import_academic') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url_for('admin.import_grades') }}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label for="academicFile" class="form-label">Select CSV File</label>
-                        <input class="form-control" type="file" id="academicFile" name="file" accept=".csv" required>
+                        <label for="gradeFile" class="form-label">Select CSV File</label>
+                        <input class="form-control" type="file" id="gradeFile" name="file" accept=".csv" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Upload Academic Data</button>
+                    <button type="submit" class="btn btn-primary">Upload Grades</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 2: Attendance and Surveys -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Import Attendance</h5>
+                <a href="{{ url_for('admin.download_template', type='attendance') }}"
+                    class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-download"></i> Template
+                </a>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('admin.import_attendance') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="attendanceFile" class="form-label">Select CSV File</label>
+                        <input class="form-control" type="file" id="attendanceFile" name="file" accept=".csv" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Attendance</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Import Surveys</h5>
+                <a href="{{ url_for('admin.download_template', type='surveys') }}"
+                    class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-download"></i> Template
+                </a>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('admin.import_surveys') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="surveyFile" class="form-label">Select CSV File</label>
+                        <input class="form-control" type="file" id="surveyFile" name="file" accept=".csv" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Surveys</button>
                 </form>
             </div>
         </div>
