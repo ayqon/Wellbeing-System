@@ -42,6 +42,8 @@ src/
 ├── static/                 # Static Assets
 │   ├── css/
 │   └── js/
+│       ├── director_charts.js # Chart.js logic for Director Academic view
+│       └── officer_charts.js  # Dynamic Chart.js logic for Officer view
 ├── templates/              # Jinja2 HTML Templates
 ├── utils/                  # Utilities
 │   ├── parsers.py          # Abstract and concrete parsers
@@ -126,9 +128,10 @@ src/
 - **`process_survey_csv(stream)`**: Parses and imports historical Wellbeing Surveys.
 
 ### `AnalyticsService`
-- **`get_officer_snapshot()`**: Returns risk data for all students (Officer view).
+- **`get_officer_snapshot()`**: Returns risk data for all students (Officer view). Now includes Grade and Attendance metrics for dynamic charting.
 - **`get_director_risk_view(course_id)`**: Returns anonymized, shuffled risk data (Director view).
 - **`get_director_academic_view(course_id)`**: Returns unanonymized academic data (Director view).
+- **`get_director_academic_charts_data(course_id)`**: Aggregates data for Director's academic scatter plot and histogram.
 - **`get_student_history(student_id)`**: Returns chronological wellbeing history DTO.
 - **`get_student_metrics_with_cohort(student_id)`**: Returns normalized metrics vs cohort averages for radar charts.
 

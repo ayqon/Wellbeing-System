@@ -56,12 +56,17 @@ def director_dashboard():
             
         course_code = course.course_code
         
+        charts_data = None
         if view_mode == 'academic':
             students = service.get_director_academic_view(course_code)
+            try:
+                charts_data = service.get_director_academic_charts_data(course_code)
+            except Exception as e:
+                current_app.logger.error(f"Failed to load charts: {e}")
         else:
             students = service.get_director_risk_view(course_code)
             
-        return render_template('director_dashboard.html', students=students, course_id=course_code, view_mode=view_mode)
+        return render_template('director_dashboard.html', students=students, course_id=course_code, view_mode=view_mode, charts_data=charts_data)
         
     except Exception as e:
         return render_template('director_dashboard.html', students=[], course_id=course_code, view_mode=view_mode, error=str(e))

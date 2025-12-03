@@ -143,6 +143,18 @@ class TestAnalyticsService:
         survey = MagicMock(stress=5, sleep=7)
         mock_survey_repo.get_by_student.return_value = [survey]
         
+        # Mock session query for grades/attendance
+        mock_session = MagicMock()
+        mock_student_repo.session = mock_session
+        grade_obj = MagicMock()
+        grade_obj.grade = 80.0
+        att_obj = MagicMock()
+        att_obj.status = 'Present'
+        
+        # Configure side_effect for query().filter_by().all()
+        # First call: grades, Second call: attendance
+        mock_session.query.return_value.filter_by.return_value.all.side_effect = [[grade_obj], [att_obj]]
+        
         mock_risk_calculator.compute.return_value = 50.0
         
         results = service.get_officer_snapshot()
@@ -152,13 +164,21 @@ class TestAnalyticsService:
         assert results[0]['risk_score'] == 50.0
         assert results[0]['stress'] == 5
         assert results[0]['sleep'] == 7
+        assert results[0]['grade'] == 80.0
+        assert results[0]['attendance'] == 100 # 1 present / 1 total
         
     def test_get_officer_snapshot_no_surveys(self, service, mock_student_repo, mock_survey_repo, mock_risk_calculator):
         student = MagicMock()
         student.student_id = "s1"
         student.misses = 0
+        student.id = 1
         mock_student_repo.list.return_value = [student]
         mock_survey_repo.get_by_student.return_value = []
+        
+        # Mock session for metrics calculation (empty grades/attendance)
+        mock_session = MagicMock()
+        mock_student_repo.session = mock_session
+        mock_session.query.return_value.filter_by.return_value.all.return_value = []
         
         mock_risk_calculator.compute.return_value = 10.0
         
@@ -173,3 +193,42 @@ class TestAnalyticsService:
         
         with pytest.raises(AnalyticsServiceError, match="Failed to fetch students"):
             service.get_officer_snapshot()
+
+    def test_get_director_academic_charts_data_success(self, service, mock_student_repo):
+        student = MagicMock()
+        student.id = 1
+        student.name = "Test"
+        mock_student_repo.fetch_by_course.return_value = [student]
+        
+        mock_session = MagicMock()
+        mock_student_repo.session = mock_session
+        
+        grade_obj = MagicMock()
+        grade_obj.grade = 80.0
+        att_obj = MagicMock()
+        att_obj.status = 'Present'
+        hist_result = [('M1', 75.5)]
+        
+        q = mock_session.query.return_value
+        q.filter_by.return_value = q
+        q.join.return_value = q
+        q.filter.return_value = q
+        q.group_by.return_value = q
+        
+        # 1. Grades (student 1)
+        # 2. Attendance (student 1)
+        # 3. Histogram
+        q.all.side_effect = [[grade_obj], [att_obj], hist_result]
+        
+        data = service.get_director_academic_charts_data("course1")
+        
+        assert len(data['scatter']) == 1
+        assert data['scatter'][0]['y'] == 80.0
+        assert len(data['histogram']) == 1
+        assert data['histogram'][0]['label'] == 'M1'
+        assert data['histogram'][0]['value'] == 75.5
+
+    def test_get_director_academic_charts_data_error(self, service, mock_student_repo):
+        mock_student_repo.fetch_by_course.side_effect = Exception("DB Error")
+        with pytest.raises(AnalyticsServiceError, match="Failed to generate chart data"):
+            service.get_director_academic_charts_data("course1")

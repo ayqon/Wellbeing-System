@@ -106,6 +106,54 @@ class AnalyticsService:
             return results
         except Exception as e:
             raise AnalyticsServiceError(f"Failed to fetch academic data: {e}")
+
+    def get_director_academic_charts_data(self, course_id):
+        """
+        Aggregates data for Director's academic charts.
+        1. Scatter Plot: Attendance vs Grade for each student.
+        2. Histogram: Average grade per module.
+        """
+        try:
+            students = self.student_repo.fetch_by_course(course_id)
+            students = self._calculate_metrics(students)
+            
+            # Scatter Plot Data
+            scatter_data = []
+            for s in students:
+                scatter_data.append({
+                    'x': getattr(s, '_temp_attendance', 0),
+                    'y': getattr(s, '_temp_grade', 0.0),
+                    'name': s.name # Optional: for tooltip
+                })
+                
+            # Histogram Data (Avg Grade per Module)
+            from src.models.academic import ModuleGrade, Module
+            from sqlalchemy import func
+            session = self.student_repo.session
+            
+            student_ids = [s.id for s in students]
+            
+            histogram_data = []
+            if student_ids:
+                results = session.query(
+                    Module.module_code, 
+                    func.avg(ModuleGrade.grade)
+                ).join(ModuleGrade).filter(
+                    ModuleGrade.student_id.in_(student_ids)
+                ).group_by(Module.id).all()
+                
+                histogram_data = [
+                    {'label': r[0], 'value': round(r[1], 2)} 
+                    for r in results
+                ]
+            
+            return {
+                'scatter': scatter_data,
+                'histogram': histogram_data
+            }
+            
+        except Exception as e:
+            raise AnalyticsServiceError(f"Failed to generate chart data: {e}")
     
     def get_student_history(self, student_id: str) -> StudentHistoryDTO:
         """
@@ -273,31 +321,34 @@ class AnalyticsService:
         """
         try:
             students = self.student_repo.list()
+            # Calculate academic metrics (Grade/Attendance)
+            students = self._calculate_metrics(students)
         except Exception as e:
             raise AnalyticsServiceError(f"Failed to fetch students: {e}")
             
         results = []
         for student in students:
             # Fetch latest survey for metrics
-            # Assuming survey_repo is available
             stress = 0
             sleep = 8
             
             if self.survey_repo:
-                # This is inefficient (N+1), but acceptable for prototype
                 surveys = self.survey_repo.get_by_student(student.student_id)
                 if surveys:
-                    latest = surveys[-1] # Assuming chronological order
-                    stress = latest.stress or 0
-                    sleep = latest.sleep or 8
+                    latest = surveys[-1]
+                    stress = latest.stress if latest.stress is not None else 0
+                    sleep = latest.sleep if latest.sleep is not None else 8
             
+            grade = getattr(student, '_temp_grade', 0.0)
+            attendance = getattr(student, '_temp_attendance', 0)
+
             # Prepare metrics
             from src.services.risk_engine import StudentMetricsDTO
             metrics = StudentMetricsDTO(
                 stress=stress,
                 sleep=sleep,
                 misses=student.misses if hasattr(student, 'misses') else student.missed_surveys,
-                grade=100.0 # Placeholder for grade
+                grade=grade
             )
             
             # Calculate risk
@@ -305,7 +356,6 @@ class AnalyticsService:
             
             # Update student record (cache)
             student.current_risk_score = risk_score
-            # self.student_repo.update(student) # Optional: persist to DB
             
             results.append({
                 "student_id": student.student_id,
@@ -313,6 +363,8 @@ class AnalyticsService:
                 "risk_score": risk_score,
                 "stress": stress,
                 "sleep": sleep,
+                "grade": round(grade, 1),
+                "attendance": round(attendance, 1),
                 "misses": metrics.misses
             })
             

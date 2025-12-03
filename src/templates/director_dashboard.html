@@ -19,6 +19,25 @@
     </div>
 </div>
 
+{% if view_mode == 'academic' and charts_data %}
+<div class="flex gap-4 mb-4">
+    <div class="card flex-1">
+        <h3>Performance vs Attendance</h3>
+        <canvas id="scatterChart"></canvas>
+    </div>
+    <div class="card flex-1">
+        <h3>Average Grade by Module</h3>
+        <canvas id="histogramChart"></canvas>
+    </div>
+</div>
+
+<script>
+    window.academicChartsData = {{ charts_data | tojson | safe }};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/director_charts.js') }}"></script>
+{% endif %}
+
 <div class="card table-container">
     <table>
         <thead>

@@ -109,3 +109,76 @@ def test_director_dashboard_renders(client, db_session):
     assert b'CS101' in response.data
     assert b'student1' not in response.data # Should be anonymized
     assert b'25.0' in response.data
+
+def test_director_dashboard_academic_view_includes_charts(client, db_session):
+    """Test that the director dashboard academic view includes charts."""
+    # Setup
+    password = "password123"
+    import bcrypt
+    hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    director = User(username="director_charts", password_hash=hashed, role="DIRECTOR")
+    db_session.add(director)
+    db_session.flush()
+    
+    course = Course(course_code="CS101", name="CompSci", director_user_id=director.id)
+    db_session.add(course)
+    
+    student_user = User(username="student_c", password_hash="hash", role="STUDENT")
+    db_session.add(student_user)
+    db_session.flush()
+    
+    student = Student(
+        student_id="S_C", 
+        user_id=student_user.id, 
+        name="Student Charts",
+        email="sc@example.com",
+        course_code="CS101"
+    )
+    db_session.add(student)
+    db_session.commit()
+    
+    # Login
+    client.post('/auth/login', data={'username': 'director_charts', 'password': 'password123'})
+    
+    # Request Academic Dashboard
+    response = client.get('/analytics/director/dashboard?view=academic')
+    
+    assert response.status_code == 200
+    assert b'scatterChart' in response.data
+    assert b'histogramChart' in response.data
+    assert b'window.academicChartsData' in response.data
+
+def test_director_dashboard_academic_view_charts_error_handling(client, db_session):
+    """Test that the dashboard renders even if charts fail to load."""
+    from unittest.mock import patch
+    
+    # Setup
+    password = "password123"
+    import bcrypt
+    hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    director = User(username="director_err", password_hash=hashed, role="DIRECTOR")
+    db_session.add(director)
+    db_session.flush()
+    
+    course = Course(course_code="CS101", name="CompSci", director_user_id=director.id)
+    db_session.add(course)
+    db_session.commit()
+    
+    # Login
+    client.post('/auth/login', data={'username': 'director_err', 'password': 'password123'})
+    
+    # Mock the service method to raise an exception
+    with patch('src.services.analytics_service.AnalyticsService.get_director_academic_charts_data') as mock_method:
+        mock_method.side_effect = Exception("Chart Error")
+        
+        # Request Academic Dashboard
+        response = client.get('/analytics/director/dashboard?view=academic')
+        
+        assert response.status_code == 200
+        # Charts should NOT be present
+        assert b'scatterChart' not in response.data
+        assert b'histogramChart' not in response.data
+        # But table should still be there
+        assert b'Student ID' in response.data

@@ -160,6 +160,7 @@ classDiagram
     class AnalyticsAPI {
         +get_officer_dashboard()
         +get_director_dashboard()
+        +get_director_academic_charts_data()
     }
 
     %% Service Layer
@@ -175,6 +176,7 @@ classDiagram
     class AnalyticsService {
         +get_officer_snapshot()
         +get_director_risk_view()
+        +get_director_academic_charts_data()
         -anonymize_data()
     }
     class RiskCalculator {
@@ -194,13 +196,25 @@ classDiagram
         +get_by_student_week(id, week)
     }
 
+    class ImportService {
+        +process_user_csv(stream)
+        +process_grade_csv(stream)
+        +process_attendance_csv(stream)
+        +process_survey_csv(stream)
+    }
+
     %% Relationships
     AdminAPI ..> AdminService : uses
+    AdminAPI ..> ImportService : uses
     SurveyAPI ..> SurveyService : uses
     AnalyticsAPI ..> AnalyticsService : uses
     
     AdminService ..> UserRepository : uses
     AdminService ..> SystemConfig : manages
+    
+    ImportService ..> UserRepository : uses
+    ImportService ..> StudentRepository : uses
+    ImportService ..> SurveyRepository : uses
     
     SurveyService ..> SurveyRepository : uses
     SurveyService ..> StudentRepository : uses

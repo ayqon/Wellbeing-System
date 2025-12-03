@@ -11,6 +11,58 @@
     </div>
 </div>
 
+</div>
+
+<div class="card mb-4">
+    <div class="flex justify-between items-center mb-4">
+        <h3>Dynamic Analytics</h3>
+        <div class="flex gap-4">
+            <div class="form-group mb-0">
+                <label for="xAxisSelect">X Axis</label>
+                <select id="xAxisSelect">
+                    <option value="grade">Grades</option>
+                    <option value="attendance">Attendance</option>
+                    <option value="sleep">Sleep</option>
+                    <option value="stress">Stress</option>
+                </select>
+            </div>
+            <div class="form-group mb-0">
+                <label for="yAxisSelect">Y Axis</label>
+                <select id="yAxisSelect">
+                    <option value="attendance">Attendance</option>
+                    <option value="grade">Grades</option>
+                    <option value="sleep">Sleep</option>
+                    <option value="stress">Stress</option>
+                </select>
+            </div>
+            <div class="form-group mb-0">
+                <label for="clusterSelect">Clustering</label>
+                <select id="clusterSelect">
+                    <option value="none">None</option>
+                    <option value="grade">By Grades</option>
+                    <option value="attendance">By Attendance</option>
+                    <option value="sleep">By Sleep</option>
+                    <option value="stress">By Stress</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="clusterToggles" class="flex gap-4 mb-4 flex-wrap">
+        <!-- Dynamic checkboxes will appear here -->
+    </div>
+
+    <div style="height: 400px;">
+        <canvas id="dynamicChart"></canvas>
+    </div>
+</div>
+
+<script>
+    window.officerData = {{ students | tojson | safe }};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/officer_charts.js') }}"></script>
+
 <div class="card table-container">
     <table>
         <thead>

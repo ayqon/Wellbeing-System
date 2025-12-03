@@ -60,7 +60,9 @@ def test_get_risk_list_officer(client, db_session):
     assert len(data) == 1
     assert data[0]["student_id"] == "s1"
     assert data[0]["username"] == "Student One"
-    assert data[0]["risk_score"] == 9.0
+    assert data[0]["risk_score"] == 34.0
+    assert "grade" in data[0]
+    assert "attendance" in data[0]
 
 def test_get_academic_list_director(client, db_session):
     # Setup
