@@ -25,7 +25,7 @@ Developed collaboratively by a 6-engineer agile team with strict separation of d
 | Role | Developer | Module & Core Architectural Ownership |
 |:---|:---|:---|
 | **DEV 1** | **Muhammad Ibne Muzammil** | Infrastructure, Dependency Injection Container (src/container.py), Dynamic Officer Analytics, Lead TDD Refactoring |
-| **DEV 2** | **Ioannis Konstantinou** (You) | **User Domain Model, Authentication Services (src/services/auth_service.py), Token Infrastructure (src/services/token_service.py), RBAC & Security** |
+| **DEV 2** | **Ioannis Konstantinou** | **User Domain Model, Authentication Services (src/services/auth_service.py), Token Infrastructure (src/services/token_service.py), RBAC & Security** |
 | **DEV 3** | **Mohammad Irfan Mohammad Noor** | Student & Tracking Domain Models, Attendance Logic, Validation Decorator Suite (src/api/validation.py) |
 | **DEV 4** | **Wu Zheyu** | Academic Domain Models, High-Throughput CSV Parsing Pipelines (src/utils/parsers.py) |
 | **DEV 5** | **Ayan Paul** | Dynamic Risk Engine (src/services/risk_engine.py), Multi-Factor Vulnerability Scoring Algorithms |
@@ -53,17 +53,17 @@ Developed collaboratively by a 6-engineer agile team with strict separation of d
 
 The codebase follows clean layered architectural patterns decoupled via a custom **Dependency Injection Container**:
 
-`
+`	ext
 src/
-├── api/            # HTTP Blueprints (Auth, Admin, Analytics, Surveys, Validation)
-├── core/           # Database session & engine configurations
-├── dtos/           # Data Transfer Objects for decoupled service responses
-├── models/         # SQLAlchemy Domain Entities (BaseModel, User, Student, Academic, Survey)
-├── repositories/   # Abstract & Concrete Repository layer (CRUD & domain queries)
-├── services/       # Core business logic (AuthService, RiskEngine, ImportService, Analytics)
-├── static/         # CSS & Chart.js frontend visualization scripts
-├── templates/      # Jinja2 templates for Student, Officer, and Director portals
-└── utils/          # Anonymization hashing and CSV stream parsers
+|-- api/            # HTTP Blueprints (Auth, Admin, Analytics, Surveys, Validation)
+|-- core/           # Database session & engine configurations
+|-- dtos/           # Data Transfer Objects for decoupled service responses
+|-- models/         # SQLAlchemy Domain Entities (BaseModel, User, Student, Academic, Survey)
+|-- repositories/   # Abstract & Concrete Repository layer (CRUD & domain queries)
+|-- services/       # Core business logic (AuthService, RiskEngine, ImportService, Analytics)
+|-- static/         # CSS & Chart.js frontend visualization scripts
+|-- templates/      # Jinja2 templates for Student, Officer, and Director portals
+-- utils/          # Anonymization hashing and CSV stream parsers
 `
 
 ---
