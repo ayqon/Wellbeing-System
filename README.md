@@ -1,12 +1,20 @@
 # SWATS - Student Wellbeing & Attendance Tracking System
 ### Collaborative University Software Engineering Initiative | Full-Stack Early Warning & Surveillance Platform
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-emerald.svg)](https://swats-wellbeing-platform.onrender.com/)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Flask 3.0](https://img.shields.io/badge/Framework-Flask%203.0-lightgrey.svg)](https://flask.palletsprojects.com/)
 [![Tests Passing](https://img.shields.io/badge/Tests-292%20%2F%20292%20Passed%20(100%25)-emerald.svg)](tests/)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20OOP%20%2F%20DI%20Container-purple.svg)](ARCHITECTURE.md)
 [![Database](https://img.shields.io/badge/ORM-SQLAlchemy%20%2F%20SQLite-blue.svg)](src/core/database.py)
 [![Security](https://img.shields.io/badge/Auth-Bcrypt%20%2B%20JWT%20RBAC-red.svg)](src/services/auth_service.py)
+
+---
+
+## Live Cloud Deployment
+
+* **Live Demo URL**: [https://swats-wellbeing-platform.onrender.com/](https://swats-wellbeing-platform.onrender.com/)
+* **Hosted on**: Render Free Tier (Automated CI/CD with Gunicorn & Pre-Seeded SQLite Demo Engine)
 
 ---
 
