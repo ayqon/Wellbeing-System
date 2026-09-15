@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: swats-wellbeing-platform
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m src.seed
+    startCommand: gunicorn wsgi:app --bind 0.0.0.0: --workers 2 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
