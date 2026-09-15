@@ -3,7 +3,7 @@ from src.container import Container
 
 def create_app(config_name="default"):
     app = Flask(__name__)
-    app.secret_key = 'dev_secret_key' # Change in production
+    import os; app.secret_key = os.environ.get('SECRET_KEY', 'dev_secret_key')
     
     # Initialize Container
     container = Container()
@@ -50,3 +50,4 @@ def create_app(config_name="default"):
 if __name__ == "__main__": # pragma: no cover
     app = create_app()
     app.run(debug=True)
+

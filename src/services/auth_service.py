@@ -1,3 +1,4 @@
+import os
 import jwt
 import datetime
 from src.models.user import User
@@ -48,3 +49,4 @@ class AuthService:
         
         token = jwt.encode(payload, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return token
+

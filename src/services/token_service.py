@@ -1,3 +1,4 @@
+import os
 import jwt
 import datetime
 from typing import Optional
@@ -32,3 +33,4 @@ class TokenService:
             return None
         except jwt.InvalidTokenError:
             return None
+

@@ -1,144 +1,130 @@
-# SWATS — Student Wellbeing & Attendance Tracking System  
-**Version:** V0.1 (Prototype / Work in Progress)    
-**Status:** Active Development
+# SWATS - Student Wellbeing & Attendance Tracking System
+### Collaborative University Software Engineering Initiative | Full-Stack Early Warning & Surveillance Platform
 
-## 📘 Overview
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Flask 3.0](https://img.shields.io/badge/Framework-Flask%203.0-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![Tests Passing](https://img.shields.io/badge/Tests-292%20%2F%20292%20Passed%20(100%25)-emerald.svg)](tests/)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean%20OOP%20%2F%20DI%20Container-purple.svg)](ARCHITECTURE.md)
+[![Database](https://img.shields.io/badge/ORM-SQLAlchemy%20%2F%20SQLite-blue.svg)](src/core/database.py)
+[![Security](https://img.shields.io/badge/Auth-Bcrypt%20%2B%20JWT%20RBAC-red.svg)](src/services/auth_service.py)
 
-SWATS is an early-warning and wellbeing monitoring system currently under development.  
-This V0.1 prototype focuses on establishing the **core architecture**, **domain models**,  
-and a **minimum walking skeleton** that the team will expand in future iterations.
+---
 
-The project aims to provide:
+## Overview
 
-- Daily wellbeing surveys for students  
-- A dynamic risk-scoring engine  
-- Separate dashboards for Directors (anonymised) and Officers (full detail)  
-- CSV import pipelines for students, grades, and attendance  
-- A secure, modular backend built using strict OOP principles  
+The **Student Wellbeing & Attendance Tracking System (SWATS)** is an early-warning educational surveillance and wellbeing monitoring platform. Developed under strict **Test-Driven Development (TDD)** and **Object-Oriented Design** principles, the platform identifies students facing academic or personal distress through proactive daily wellbeing surveys, attendance metrics, and dynamic risk scoring.
 
-## 👥 Team Members
+The system incorporates **Privacy by Design**, enforcing SHA-256 hash-masked anonymization for Course Directors while providing unanonymized, multi-variable analytical control to Academic Officers.
 
-| Role | Developer | Responsibility |
-|------|-----------|----------------|
-| **DEV1** | Muhammad Ibne Muzammil | Infrastructure, DI Container, Architecture |
-| **DEV2** | Ioannis Konstantinou | User Domain, Auth Logic |
-| **DEV3** | Mohammad Irfan Mohammad Noor | Student & Tracking Models |
-| **DEV4** | Wu Zheyu | Academic Models, CSV Parsers |
-| **DEV5** | Paul Ayan | Risk Engine, Service Logic |
-| **DEV6** | Zhang Zhexian | Privacy Layer, Analytics Design |
+---
 
-## 🔐 User Roles
+## Collaborative Team & Architectural Ownership
 
-| Actor | Access Level | Responsibilities |
-| :--- | :--- | :--- |
-| **Student** | Basic | Log in, Submit Wellbeing Surveys, Skip Surveys (with penalty). |
-| **Officer** | **Super Admin** | Import Users/Data (CSV), Hard Delete Users, View **Unanonymized** Risk Data & Historical Trends. |
-| **Director** | Restricted | View **Anonymized** Risk & Academic Analytics (Hash-masked IDs) for their course. |
+Developed collaboratively by a 6-engineer agile team with strict separation of domain boundaries and modular interfaces.
 
-## 🚀 Key Features (v0.1)
+| Role | Developer | Module & Core Architectural Ownership |
+|:---|:---|:---|
+| **DEV 1** | **Muhammad Ibne Muzammil** | Infrastructure, Dependency Injection Container (src/container.py), Dynamic Officer Analytics, Lead TDD Refactoring |
+| **DEV 2** | **Ioannis Konstantinou** (You) | **User Domain Model, Authentication Services (src/services/auth_service.py), Token Infrastructure (src/services/token_service.py), RBAC & Security** |
+| **DEV 3** | **Mohammad Irfan Mohammad Noor** | Student & Tracking Domain Models, Attendance Logic, Validation Decorator Suite (src/api/validation.py) |
+| **DEV 4** | **Wu Zheyu** | Academic Domain Models, High-Throughput CSV Parsing Pipelines (src/utils/parsers.py) |
+| **DEV 5** | **Ayan Paul** | Dynamic Risk Engine (src/services/risk_engine.py), Multi-Factor Vulnerability Scoring Algorithms |
+| **DEV 6** | **Zhang Zhexian** | Privacy Layer & Data Anonymization Engine (src/utils/privacy.py), Dynamic Analytics Visualization |
 
-### 1. Director Academic Charts
-The Director Dashboard includes advanced visualizations for academic performance:
--   **Scatter Plot**: "Performance vs Attendance" - Correlates student grades with attendance percentages.
--   **Histogram**: "Average Grade by Module" - Shows the distribution of grades across different modules.
--   **Privacy**: All data remains anonymized (hashed IDs) to comply with privacy requirements.
+---
 
-### 2. Student Radar Chart
-The Student Dashboard features a **Wellbeing Radar Chart**:
--   **Visualizes**: Stress, Sleep, Attendance, and Grades.
--   **Comparison**: Overlays the student's metrics against the **Cohort Average**.
--   **Goal**: Provides immediate visual feedback on areas needing attention.
+## Key System Features
 
-### 3. Dynamic Officer Analytics
-The Officer Dashboard features a fully dynamic analytics tool:
--   **Customizable Axes**: Select X and Y axes from **Grades**, **Attendance**, **Sleep**, and **Stress**.
--   **Clustering**: Group students by performance/wellbeing bands (e.g., "Fail", "First", "Critical Attendance").
--   **Interactive Filtering**: Toggle specific clusters on/off to focus on at-risk groups.
+### 1. Multi-Tiered Role-Based Access Control (RBAC)
+* **Student Dashboard**: Submit daily wellbeing check-ins (sleep hours, stress levels), view personal historical trends, and compare metrics against the cohort average via a **Wellbeing Radar Chart**.
+* **Officer Dashboard (Super Admin)**: Complete unanonymized visibility, multi-axis scatter and clustering analytics, hard/soft user deletion, and bulk CSV ingestion.
+* **Director Dashboard (Restricted & Anonymized)**: Course-level aggregate performance histograms, grade-vs-attendance correlation charts, and SHA-256 hash-masked student IDs for GDPR compliance.
 
-### 4. Expanded Data Import
-The Admin interface supports granular CSV imports:
--   **Users**: Bulk create students and staff.
--   **Grades**: Import module results.
--   **Attendance**: Import session registers.
--   **Surveys**: Import historical wellbeing data.
+### 2. Dynamic Risk Scoring Engine
+* Real-time calculation of multi-factorial risk scores combining survey responses, chronic non-submission penalties, academic grade dips, and attendance drop-offs.
+* Categorizes students into **Low Risk**, **Disengagement Hazard**, **High Stress Hazard**, and **Silent Struggle** cohorts.
 
-### 5. Algorithmic Risk Engine
-Calculates a dynamic risk score (0-100) based on weighted factors:
--   **Stress** (Self-reported)
--   **Sleep** (Self-reported)
--   **Attendance** (System tracked)
--   **Grades** (System tracked)
--   **Missed Surveys** (Penalty factor)
+### 3. High-Throughput CSV Ingestion Pipeline
+* Granular streaming parsers for bulk ingestion of users, academic grades, attendance logs, and survey records with automated rollback on validation failure.
 
-## 🛠️ Setup & Installation
+---
 
-### Prerequisites
--   Python 3.10+
--   pip
+## System Architecture
 
-### Installation
+The codebase follows clean layered architectural patterns decoupled via a custom **Dependency Injection Container**:
 
-1.  **Clone the repository**:
-    ```bash
-    git clone <repository-url>
-    cd wellbeing-system
-    ```
+`
+src/
+├── api/            # HTTP Blueprints (Auth, Admin, Analytics, Surveys, Validation)
+├── core/           # Database session & engine configurations
+├── dtos/           # Data Transfer Objects for decoupled service responses
+├── models/         # SQLAlchemy Domain Entities (BaseModel, User, Student, Academic, Survey)
+├── repositories/   # Abstract & Concrete Repository layer (CRUD & domain queries)
+├── services/       # Core business logic (AuthService, RiskEngine, ImportService, Analytics)
+├── static/         # CSS & Chart.js frontend visualization scripts
+├── templates/      # Jinja2 templates for Student, Officer, and Director portals
+└── utils/          # Anonymization hashing and CSV stream parsers
+`
 
-2.  **Create a virtual environment** (Recommended):
-    ```bash
-    python -m venv venv
-    # Windows
-    venv\Scripts\activate
-    # Linux/Mac
-    source venv/bin/activate
-    ```
+---
 
-3.  **Install dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Quickstart & Local Setup
 
-### Running the Application
+### 1. Clone & Environment Setup
+`ash
+git clone https://github.com/ayqon/wellbeing-system.git
+cd wellbeing-system
 
-1.  **Initialize the database** (First run only):
-    The application uses SQLite. The database is initialized automatically on first run, or you can use the import tools to seed data.
+# Install dependencies
+pip install -r requirements.txt
+`
 
-2.  **Start the server**:
-    ```bash
-    flask run
-    ```
-    The application will be available at `http://127.0.0.1:5000`.
+### 2. Seed Database with Realistic Demo Data
+`ash
+python -m src.seed
+`
 
-3.  **Seed the Database** (Optional):
-    Populate the database with synthetic test data (Users, Students, Grades, Attendance, Surveys):
-    ```bash
-    python -m src.seed
-    ```
-    *Note: This will reset the database and create default users (e.g., `admin`, `director`, `officer`).*
+### 3. Launch Application
+`ash
+python -m src.app
+`
+* Access the platform at: http://127.0.0.1:5000
 
-### Running Tests
+---
 
-The project maintains **100% Test Coverage**. To run the test suite:
+## Demo Credentials
 
-1.  **Run all tests**:
-    ```bash
-    pytest
-    ```
+The database seeder automatically initializes realistic accounts across all three user tiers:
 
-2.  **Run with coverage report**:
-    ```bash
-    pytest --cov=src --cov-report=term-missing
-    ```
+| Role | Username | Password | Dashboard Features |
+|:---|:---|:---|:---|
+| **Student** | student1 | password123 | Daily Survey Form, Personal Wellbeing Radar Chart |
+| **Academic Officer** | officer1 | password123 | Full Unanonymized Surveillance, Dynamic Filter Analytics, CSV Import |
+| **Course Director** | director1 | password123 | Course Aggregate Histograms, Grade vs Attendance (Hashed IDs) |
 
-## 🏗️ Architecture
+---
 
-The system follows a **Monolithic MVC** architecture with a strict separation of concerns:
+## Test Suite & Verification
 
--   **`src/models`**: SQLAlchemy ORM models (Data Layer).
--   **`src/repositories`**: Data access abstraction.
--   **`src/services`**: Business logic and orchestration.
--   **`src/api`**: Flask Blueprints (Controllers).
--   **`src/templates`**: Jinja2 HTML templates (View).
--   **`src/container.py`**: Dependency Injection container.
+The project enforces comprehensive test coverage across unit, integration, and end-to-end system flows:
 
-See `ARCHITECTURE.md` for detailed diagrams and design decisions.
+`ash
+# Execute entire test suite
+python -m pytest -v
+
+# Run with test coverage report
+python -m pytest --cov=src --cov-report=term-missing
+`
+
+* **Test Suite Status**: **292 / 292 tests passing (100% pass rate)**.
+
+---
+
+## Agile Sprint & Engineering Artifacts
+
+Full documentation of system design and sprint refactoring reports:
+* [Software Requirements Specification (SRS)](SWATS_v0_01_srs.md)
+* [System Architecture & DI Container Design](ARCHITECTURE.md)
+* [Sprint Refactor Report - Day 1](REFACTOR_REPORT_DAY_1.md)
+* [Sprint Refactor Report - Day 2](REFACTOR_REPORT_DAY_2.md)
+* [Sprint Refactor Report - Day 3](REFACTOR_REPORT_DAY_3.md)
